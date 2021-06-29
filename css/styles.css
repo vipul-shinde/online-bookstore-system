@@ -2,6 +2,7 @@
 /********************************** Headings **********************************/
 .big-heading {
   color: #FCDEC0;
+  line-height: 1.5;
 }
 
 
@@ -22,6 +23,10 @@
   color: #E3954E;
 }
 
+.navbar-brand:hover {
+  color: #FCDEC0;
+}
+
 .navbar {
   padding: 0 0 4.5rem;
 }
@@ -36,8 +41,13 @@
   color: #FCDEC0;
 }
 
+.nav-link:hover {
+  color: #E3954E;
+}
+
 .book-image {
   width: 80%;
+  margin-left: 20px;
 }
 
 .search-button {
