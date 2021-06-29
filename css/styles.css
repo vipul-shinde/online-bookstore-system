@@ -1,0 +1,53 @@
+
+/********************************** Headings **********************************/
+.big-heading {
+  color: #FCDEC0;
+}
+
+
+
+
+/*******************************Title Section *******************************************/
+#title {
+  background-color: #513826;
+}
+
+.container-fluid {
+  padding: 3% 15% 7%;
+}
+
+.navbar-brand {
+  font-family: "Ubuntu";
+  font-size: 3rem;
+  color: #E3954E;
+}
+
+.navbar {
+  padding: 0 0 4.5rem;
+}
+
+.nav-item {
+  padding: 0 18px;
+}
+
+.nav-link {
+  font-size: 1.2rem;
+  font-weight: 200;
+  color: #FCDEC0;
+}
+
+.book-image {
+  width: 80%;
+}
+
+.search-button {
+  color: #FCDEC0;
+  border-color: #E3954E;
+}
+
+.explore-button {
+  color: #FCDEC0;
+  border-color: #E3954E;
+  background-color: #E3954E;
+  margin-top: 20px;
+}
