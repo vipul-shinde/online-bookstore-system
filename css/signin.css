@@ -38,10 +38,14 @@ hr {
   border-top-right-radius: 0;
 }
 
-.company-name {
+.navbar-brand {
   font-family: "Ubuntu";
   font-size: 3rem;
   color: #E3954E;
+}
+
+.navbar-brand:hover {
+  color: #FCDEC0;
 }
 
 .signin-button {
