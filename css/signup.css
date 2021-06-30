@@ -1,0 +1,79 @@
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+hr {
+  margin: 2rem;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 300;
+  font-size: 15px;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-inputs {
+  margin: 10px 0;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.company-name {
+  font-family: "Ubuntu";
+  font-size: 3rem;
+  color: #E3954E;
+  text-align: center;
+}
+
+.signin-button {
+  color: #FCDEC0;
+  border-color: #E3954E;
+  background-color: #E3954E;
+}
+
+.signup-button {
+  color: #FCDEC0;
+  border-color: #E3954E;
+  background-color: #E3954E;
+}
+
+.privacy {
+  color: #E3954E;
+}
+
+.main-form {
+  text-align: center;
+}
+
+.inner-form {
+  text-align: left;
+}
