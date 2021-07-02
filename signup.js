@@ -34,6 +34,9 @@ function checkAll(name,email,pass1,pass2)
 	if (email.value.length == 0|| name.value.length == 0 || pass2_len == 0 || pass1_len == 0) {
 		alert("Fill out all fields");
 	}
+	if (email.value.length != 0|| name.value.length != 0 || pass2_len != 0 || pass1_len != 0) {
+		return true;
+	}
 }
 
 function passValidation(pass1,pass2,mx,my)
