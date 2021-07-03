@@ -13,7 +13,7 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" crossorigin="anonymous" />
-  
+
   <script src="signup.js"></script>
 </head>
 </head>
@@ -21,7 +21,7 @@
 <body>
 
   <main class="form-signup">
-    <form class="main-form" name = "signupForm" onSubmit="return validation();">
+    <form class="main-form" name="signupForm" onSubmit="return validation();">
       <a class="navbar-brand" href="index.html">Genlib</a>
       <h4 class="mb-3 fw-normal">Create Account</h4>
 
@@ -30,7 +30,7 @@
         <div class="form-inputs">
           <label for="floatingInput">*Your Name: </label>
           <input type="text" class="form-control" id="floatingInput" placeholder="eg. John Doe" name="userName">
-          <div id="emailHelp" class="form-text">Please enter your First and Last name.</div>
+          <div id="nameHelp" class="form-text">Please enter your First and Last name.</div>
         </div>
 
         <div class="form-inputs">
@@ -42,13 +42,13 @@
         <div class="form-inputs">
           <label for="floatingPassword">*Password: </label>
           <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="userPassword">
-          <div id="emailHelp" class="form-text"><i class="fas fa-info-circle"></i> Passwords must be atleast 8 characters.</div>
+          <div id="passwordHelp" class="form-text"><i class="fas fa-info-circle"></i> Passwords must be atleast 8 characters.</div>
         </div>
 
         <div class="form-inputs">
           <label for="floatingRe-enterPassword">*Re-enter Password: </label>
           <input type="password" class="form-control" id="floatingRe-enterPassword" placeholder="Password" name="userPassword2">
-		  <div id="requiredFields" class="form-text"> * Requried fields.</div>
+          <div id="requiredFields" class="form-text"> * Requried fields.</div>
         </div>
 
         <div class="checkbox mb-3">
@@ -63,7 +63,7 @@
           </label>
         </div>
 
-      <button class="w-100 btn signup-button" name="submit" value="Submit" type="submit">Sign up</button>
+        <button class="w-100 btn signup-button" name="submit" value="Submit" type="submit">Sign up</button>
 
       </div>
 

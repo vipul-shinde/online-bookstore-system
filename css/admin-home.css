@@ -108,7 +108,7 @@ main {
 }
 
 .search-button {
-  color: #FCDEC0;
+  color: #F9F9F9;
   border-color: #E3954E;
   background-color: #E3954E;
 }
@@ -128,4 +128,15 @@ main {
 .dot-icon {
   color: #212529;
   margin-left: 230px;
+}
+
+.add-books {
+  margin-left: 15px;
+  color: #F9F9F9;
+  border-color: #E3954E;
+  background-color: #E3954E;
+}
+
+.form-inputs {
+  margin: 10px 0;
 }
