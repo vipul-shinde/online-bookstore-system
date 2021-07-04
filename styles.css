@@ -1,0 +1,77 @@
+
+/********************************** Headings **********************************/
+.big-heading {
+  color: #FCDEC0;
+  line-height: 1.5;
+  /*font-size: 200%;*/
+}
+
+
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+}
+
+
+/*******************************Title Section *******************************************/
+#title {
+  background-color: #513826;
+}
+
+.container-fluid {
+  padding: 3% 10% 3%;
+}
+
+.container-fluid-title {
+  padding: 0% 10% 0%;
+}
+
+.navbar-brand {
+  font-family: "Ubuntu";
+  font-size: 3rem;
+  color: #E3954E;
+}
+
+.navbar-brand:hover {
+  color: #FCDEC0;
+}
+
+.navbar {
+  /*padding: 0 0 4.5rem;*/
+}
+
+.nav-item {
+  padding: 0 18px;
+}
+
+.nav-link {
+  font-size: 1.2rem;
+  font-weight: 200;
+  color: #FCDEC0;
+}
+
+.nav-link:hover {
+  color: #E3954E;
+}
+
+.book-image {
+  width: 80%;
+  margin-left: 20px;
+}
+
+.search-button {
+  color: #FCDEC0;
+  border-color: #E3954E;
+}
+
+.explore-button {
+  color: #F9F9F9;
+  border-color: #E3954E;
+  background-color: #E3954E;
+  margin-top: 20px;
+}
