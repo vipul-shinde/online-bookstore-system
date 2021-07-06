@@ -1,11 +1,11 @@
 
 /********************************** Headings **********************************/
 .big-heading {
-  color: #FCDEC0;
+  color: #F07B3F;
   line-height: 1.5;
+  text-align: center;
+  margin-bottom: 50px;
 }
-
-
 
 body {
   font-family: 'Montserrat', sans-serif;
@@ -19,25 +19,25 @@ h1, h2, h3, h4, h5, h6 {
 
 /*******************************Title Section *******************************************/
 #title {
-  background-color: #513826;
+  background-color: #0A1931;
 }
 
 .container-fluid {
   padding: 3% 15% 7%;
 }
 
+#title .container-fluid{
+  padding: 0 15%;
+}
+
 .navbar-brand {
   font-family: "Ubuntu";
   font-size: 3rem;
-  color: #E3954E;
+  color: #FF7600;
 }
 
 .navbar-brand:hover {
   color: #FCDEC0;
-}
-
-.navbar {
-  padding: 0 0 4.5rem;
 }
 
 .nav-item {
@@ -47,7 +47,7 @@ h1, h2, h3, h4, h5, h6 {
 .nav-link {
   font-size: 1.2rem;
   font-weight: 200;
-  color: #FCDEC0;
+  color: #FFC074;
 }
 
 .nav-link:hover {
@@ -60,7 +60,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .search-button {
-  color: #FCDEC0;
+  color: #FFC074;
   border-color: #E3954E;
 }
 
@@ -69,4 +69,64 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #E3954E;
   background-color: #E3954E;
   margin-top: 20px;
+}
+
+/*******************************Category Section***********************************/
+#category {
+  background-color: #F6F6F6;
+}
+
+.cat-card-img{
+  margin-top: 1.5rem;
+  height: 100px;
+  width: 100px;
+}
+
+.cat-card {
+  border: none;
+}
+
+.cat-card:hover {
+  border: 1px solid;
+}
+/**************************Top Sellers Section*****************************************/
+
+#top-sellers {
+  background-color: #0A1931;
+}
+
+.next-btn, .prev-btn {
+  background-color: #F07B3F;
+}
+
+/* New Arrivals Section */
+
+#new-arrivals {
+  background-color: #F6F6F6;
+}
+
+.book-column {
+  padding: 3% 2%;
+}
+
+.add-cart-btn {
+  color: #F9F9F9;
+  border-color: #F07B3F;
+  background-color: #F07B3F;
+  margin: 20px 10px 0;
+}
+
+/* Footer Section */
+
+#footer {
+  background-color: #0A1931;
+  text-align: center;
+}
+
+#footer p {
+  color: #F07B3F;
+}
+.footer-icons {
+  padding: 20px 10px;
+  color: #F07B3F;
 }

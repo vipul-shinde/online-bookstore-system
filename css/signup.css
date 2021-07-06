@@ -4,7 +4,7 @@ body {
   align-items: center;
   padding-top: 40px;
   padding-bottom: 40px;
-  background-color: #f5f5f5;
+  background-color: #F6F6F6;
 }
 
 hr {
@@ -34,7 +34,7 @@ label {
 .navbar-brand {
   font-family: "Ubuntu";
   font-size: 3rem;
-  color: #E3954E;
+  color: #FF7600;
 }
 
 .navbar-brand:hover {
@@ -43,18 +43,18 @@ label {
 
 .signin-button {
   color: #f5f5f5;
-  border-color: #E3954E;
-  background-color: #E3954E;
+  border-color: #F07B3F;
+  background-color: #F07B3F;
 }
 
 .signup-button {
   color: #f5f5f5;
-  border-color: #E3954E;
-  background-color: #E3954E;
+  border-color: #F07B3F;
+  background-color: #F07B3F;
 }
 
 .privacy {
-  color: #E3954E;
+  color: #F07B3F;
 }
 
 .main-form {

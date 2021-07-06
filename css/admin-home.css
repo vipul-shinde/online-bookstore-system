@@ -2,6 +2,7 @@ body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
   font-family: 'Montserrat', sans-serif;
+  background-color: #F6F6F6;
 }
 
 html {
@@ -20,7 +21,7 @@ main {
 .navbar-brand {
   font-family: "Ubuntu";
   font-size: 2.5rem;
-  color: #E3954E;
+  color: #FF7600;
 }
 
 .navbar-brand:hover {
@@ -98,7 +99,7 @@ main {
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     color: #fff;
-    background-color: #E3954E;
+    background-color: #F07B3F;
 }
 
 .navbar-nav {
@@ -107,8 +108,8 @@ main {
 
 .search-button {
   color: #F9F9F9;
-  border-color: #E3954E;
-  background-color: #E3954E;
+  border-color: #F07B3F;
+  background-color: #F07B3F;
 }
 
 .none {
@@ -130,8 +131,8 @@ main {
 .add-books {
   margin-left: 15px;
   color: #F9F9F9;
-  border-color: #E3954E;
-  background-color: #E3954E;
+  border-color: #F07B3F;
+  background-color: #F07B3F;
 }
 
 .form-inputs {
