@@ -109,11 +109,21 @@ h1, h2, h3, h4, h5, h6 {
   padding: 3% 2%;
 }
 
-.add-cart-btn {
+.add-cart-btn, .details-btn {
   color: #F9F9F9;
   border-color: #F07B3F;
   background-color: #F07B3F;
-  margin: 20px 10px 0;
+}
+
+.navi-btn {
+  position: relative;
+  left: 20%;
+  top: 50px;;
+}
+
+.top-selling-heading {
+  position: relative;
+  left: 50%;
 }
 
 /* Footer Section */
