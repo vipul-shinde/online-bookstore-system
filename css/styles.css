@@ -83,11 +83,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cat-card {
-  border: none;
+  border: 1px thin;
+  width: 15%;
+  margin-right: 20px;
 }
 
 .cat-card:hover {
-  border: 1px solid;
+  border: 2px solid;
+  border-color: #F07B3F;
 }
 /**************************Top Sellers Section*****************************************/
 
