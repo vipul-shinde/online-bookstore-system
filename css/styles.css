@@ -9,6 +9,7 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
+  background-color: #F6F6F6;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -142,4 +143,12 @@ h1, h2, h3, h4, h5, h6 {
 .footer-icons {
   padding: 20px 10px;
   color: #F07B3F;
+}
+
+.container {
+  max-width: 960px;
+}
+
+#searchBarSec {
+  background-color: #F6F6F6;
 }

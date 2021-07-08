@@ -4,10 +4,11 @@ function validation()
 	var pass2 = document.signupForm.userPassword2;
 	var name = document.signupForm.userName;
 	var email = document.signupForm.userEmail;
-	if(checkAll(name,email,pass1,pass2)){	
+	if(checkAll(name,email,pass1,pass2)){
 		if(passValidation(pass1,pass2,8,16)){
 			if(nameValid(name)){
 				if(validateEmail(email)){
+					window.location.href="signup-confirmation.html"
 				}
 			}
 		}
@@ -25,10 +26,10 @@ function checkAll(name,email,pass1,pass2)
 	if (pass2_len == 0){
 		pass2.classList.add("border-danger");
 	}
-	if (name.value.length == 0) { 
+	if (name.value.length == 0) {
 		name.classList.add("border-danger");
 	}
-	if (email.value.length == 0) { 
+	if (email.value.length == 0) {
 		email.classList.add("border-danger");
 	}
 	if (email.value.length == 0|| name.value.length == 0 || pass2_len == 0 || pass1_len == 0) {
@@ -67,7 +68,7 @@ function passValidation(pass1,pass2,mx,my)
 }
 
 function nameValid(name)
-{ 
+{
 	var letters = /^[A-Za-z]+$/;
 	if(name.value.match(letters))
 	{

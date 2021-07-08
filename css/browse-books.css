@@ -1,7 +1,6 @@
 body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
-  font-family: 'Montserrat', sans-serif;
   background-color: #F6F6F6;
 }
 
@@ -114,6 +113,11 @@ main {
 
 .none {
   color: #161616;
+  font-size: 1.2rem;
+}
+
+.current-page {
+  color: #F07B3F;
 }
 
 .container-fluid {
@@ -177,4 +181,82 @@ main {
 .cat-card:hover {
   border: 2px solid;
   border-color: #F07B3F;
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.number-input {
+  border: 2px solid #ddd;
+  display: inline-flex;
+}
+
+.number-input,
+.number-input * {
+  box-sizing: border-box;
+}
+
+.number-input button {
+  outline:none;
+  -webkit-appearance: none;
+  background-color: #F07B3F;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+}
+
+.number-input button:after {
+  display: inline-block;
+  position: absolute;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: '\f077';
+  transform: translate(-50%, -50%) rotate(180deg);;
+}
+.number-input button.plus:after {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.number-input input[type=number] {
+  font-family: sans-serif;
+  max-width: 5rem;
+  padding: .5rem;
+  border: solid #ddd;
+  border-width: 0 2px;
+  font-size: 1.5rem;
+  height: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.cart-row {
+margin: 50px 0 0;
+}
+
+.cart-container {
+  text-align: center;
+}
+
+.cart-element {
+  position: relative;
+  top: 50px;
+}
+
+.lh-condensed { line-height: 1.25; }
+
+.form-element {
+  margin-top: 10px;
 }
