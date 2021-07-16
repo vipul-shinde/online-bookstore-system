@@ -152,3 +152,29 @@ h1, h2, h3, h4, h5, h6 {
 #searchBarSec {
   background-color: #F6F6F6;
 }
+
+.summary-container {
+  padding: 5%;
+}
+
+.history-container {
+  background-color: #fff;
+  text-align: center;
+}
+
+
+
+.help-button {
+  color: #FFC074;
+  border-color: #E3954E;
+}
+
+.reorder-button {
+  color: #F9F9F9;
+  border-color: #E3954E;
+  background-color: #E3954E;
+}
+
+.order-card {
+  margin-bottom: 25px;
+}
