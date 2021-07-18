@@ -15,12 +15,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" crossorigin="anonymous" />
 
 </head>
-</head>
 
 <body>
-
   <main class="form-signup">
-    <form class="main-form" name="signupForm">
+    <form class="main-form" name="signupForm" method="POST">
+        {% csrf_token %}
       <a class="navbar-brand" href="index.html">Genlib</a>
       <h4 class="mb-3 fw-normal">Create Account</h4>
 
@@ -52,13 +51,13 @@
 
         <div class="checkbox mb-3">
           <label>
-            <input type="checkbox" value="promotional-emails"> Yes, I want to receive promotional emails
+            <input type="checkbox" value="promotions" name="checks[]"> Yes, I want to receive promotional emails
           </label>
         </div>
 
         <div class="checkbox mb-3">
           <label>
-            <input type="checkbox" value="termsandconditions"> I agree to all the <span class="privacy">Term, Privacy Policy</span> and <span class="privacy">Conditions</span>
+            <input type="checkbox" value="terms" name="checks[]"> I agree to all the <span class="privacy">Term, Privacy Policy</span> and <span class="privacy">Conditions</span>
           </label>
         </div>
 
@@ -75,6 +74,10 @@
     </form>
   </main>
   <script src="..\..\static\js\signup.js"></script>
+
+  {% if email_flag %}
+    <script>alert("Email already in use")</script>
+  {% endif %}
 </body>
 
 </html>

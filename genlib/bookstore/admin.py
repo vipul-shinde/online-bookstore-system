@@ -5,7 +5,7 @@ from .models import *
 
 class UserAdminConfig(UserAdmin):
     list_display = ("first_name", "last_name", "email", "is_staff", 
-                    "is_active", "is_suspended", "is_superuser")
+                    "is_active", "is_suspended", "is_superuser", "password")
 
     fieldsets = (
         ("Account", {"fields": ("first_name", "last_name", "email", "password", "phone")}),
@@ -31,6 +31,15 @@ class BookAdmin(admin.ModelAdmin):
                     "edition", "publisher", "publication_year",
                     "author", "stock", "cost", "rating")
 
+
+class CartAdmin(admin.ModelAdmin):
+    list_display = ("id", "user")
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
 # Register your models here.
-admin.site.register(User, UserAdminConfig)
 admin.site.register(Book, BookAdmin)
+admin.site.register(User, UserAdminConfig)
+admin.site.register(Cart, CartAdmin)

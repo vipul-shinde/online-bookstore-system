@@ -31,6 +31,7 @@ class UserManager(BaseUserManager):
         user = self.model(first_name=first_name,
                           last_name=last_name,
                           email=email,
+                          password=password,
                           receive_promotions=receive_promotions,
                           phone=phone,
                           street=street,
@@ -55,10 +56,10 @@ class UserManager(BaseUserManager):
         kwargs.setdefault('is_active', True)
         kwargs.setdefault('is_suspended', False)
 
-        return self.create_user(first_name, last_name, email, password, 
-                                receive_promotions, phone, street,
-                                city, state, zip_code, card_name,
-                                card_num, card_exp, card_cvv,
+        return self.create_user(first_name=first_name, last_name=last_name, email=email, password=password, 
+                                receive_promotions=receive_promotions, phone=phone, street=street,
+                                city=city, state=state, zip_code=zip_code, card_name=card_name,
+                                card_num=card_num, card_exp=card_exp, card_cvv=card_cvv,
                                 **kwargs)
 
 
@@ -86,8 +87,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'receive_promotions',
-                       'phone', 'street', 'city', 'state', 'zip_code',
-                       'card_name', 'card_num', 'card_exp', 'card_cvv',]
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'password', 'receive_promotions']
+
     def __str__(self):
         return self.email
+
+
+class CartManager(models.Manager):
+    def create_cart(self, user):
+        cart = self.create(user=user)
+        return cart
+
+
+class Cart(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    objects = CartManager()
+
+    def __str__(self):
+        return str(self.id)
