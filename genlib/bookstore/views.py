@@ -28,13 +28,9 @@ def index(request):
 
 def signup(request):
     if request.method == "POST":
-        name = request.POST['userName']
-        name = name.split(' ')
-        if len(name) == 1:
-            first_name, last_name = name[0], ""
-        else:
-            first_name, last_name = name[0], name[1]
-
+        first_name = request.POST['userFirst_name']
+        last_name = request.POST['userLast_name']
+        phone = request.POST['userPhone']
         email = request.POST['userEmail']
         password = request.POST['userPassword']
 
@@ -49,7 +45,7 @@ def signup(request):
                 return render(request, 'bookstore/sign-up.html', {'email_flag': True})
 
         user = User(first_name=first_name, last_name=last_name, email=email,
-                    receive_promotions=receive_promotions)
+                    receive_promotions=receive_promotions, phone=phone)
         user.set_password(password)
         user.save()
 
@@ -149,6 +145,27 @@ def book_detail(request, title):
 
 
 @login_required
+def password_change_complete(request):
+    # send_mail(
+    #     "Your account password has changed",
+    #     [request.user.email],
+    #     fail_silently=False,
+    # )
+    return redirect('edit_profile')
+
+
+def password_reset_complete(request):
+    return redirect('login')
+
+
+def getCartCount(request):
+    if request.user.is_authenticated:
+        return 10
+    else:
+        return ""
+
+
+@login_required
 def edit_profile(request):
     context = {
         'cartCount': getCartCount(request)
@@ -158,20 +175,5 @@ def edit_profile(request):
     return render(request, 'bookstore/editprofile.html', context)
 
 
-def getCartCount(request):
-    if request.user.is_authenticated:
-        return 10
-    else:
-        return ""
-
-@login_required
-def password_change_complete(request):
-    # send_mail(
-    #     "Your account password has changed",
-    #     [request.user.email],
-    #     fail_silently=False,
-    # )
-    return redirect('edit_profile')
-
-def password_reset_complete(request):
-    return redirect('login')
+def search(request):
+    return render(request, 'bookstore/search.html')

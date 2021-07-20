@@ -69,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True, primary_key=True)
     receive_promotions = models.BooleanField(default=False)
 
-    phone = models.CharField(max_length=10, null=True, blank=True)
+    phone = models.CharField(max_length=11, null=True, blank=True)
     street = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=20, null=True, blank=True)
     state = models.CharField(max_length=20, null=True, blank=True)
@@ -89,7 +89,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'password', 'receive_promotions']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'password', 'receive_promotions', 'phone']
 
     def __str__(self):
         return self.email

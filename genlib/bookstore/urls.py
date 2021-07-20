@@ -14,6 +14,7 @@ urlpatterns = [
     path('productDetails/<str:title>/', views.book_detail, name='book-details'),
     path('signout', views.signout, name='signout'),
     path('editprofile.html', views.edit_profile, name='edit_profile'),
+    path('search.html', views.search, name='search'),
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name='bookstore/password-reset/password_reset.html',
