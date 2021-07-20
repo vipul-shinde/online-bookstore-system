@@ -107,7 +107,7 @@ def login(request):
             if len(users) == 0:
                 flags['email_flag'] = True
                 return render(request, 'bookstore/login.html', flags)
-            
+
             if not users[0].is_active:
                 flags['active_flag'] = True
                 return render(request, 'bookstore/login.html', flags)
