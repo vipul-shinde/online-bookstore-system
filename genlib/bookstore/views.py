@@ -18,12 +18,18 @@ from .tokens import account_activation_token
 
 # Create your views here.
 def index(request):
-    context = {
-        'best_sellers': Book.objects.filter(rating=5).order_by('?'),
-        'new_arrivals': Book.objects.all(),
-        # 'cartCount': getCartCount(request),
-    }
-    return render(request, 'bookstore/index.html', context)
+    if request.method == "POST":
+        context = {
+            'search': request.POST['search']
+        }
+        return render(request, 'bookstore/search.html', context)
+    else:
+        context = {
+            'best_sellers': Book.objects.filter(rating=5).order_by('?'),
+            'new_arrivals': Book.objects.all(),
+            # 'cartCount': getCartCount(request),
+        }
+        return render(request, 'bookstore/index.html', context)
 
 
 def signup(request):
@@ -45,7 +51,9 @@ def signup(request):
                 return render(request, 'bookstore/sign-up.html', {'email_flag': True})
 
         user = User(first_name=first_name, last_name=last_name, email=email,
-                    receive_promotions=receive_promotions, phone=phone)
+                    receive_promotions=receive_promotions, phone=phone,
+                    street="", city="", state="", zip_code="", county="",
+                    country="")
         user.set_password(password)
         user.save()
 
@@ -122,7 +130,10 @@ def login(request):
                 return render(request, 'bookstore/login.html', flags)
 
             auth_login(request, user)
-            return redirect('index')
+            if user.is_staff:
+                return redirect('admin_home')
+            else:
+                return redirect('index')
         else:
             return render(request, 'bookstore/login.html')
 
@@ -167,13 +178,50 @@ def getCartCount(request):
 
 @login_required
 def edit_profile(request):
-    context = {
-        'cartCount': getCartCount(request)
-    }
     if request.method == "POST":
-        pass
-    return render(request, 'bookstore/editprofile.html', context)
+        user = request.user
+        checks = request.POST.getlist("checks[]")
+        
+        if "delete_address" in checks:
+            user.street = ""
+            user.city = ""
+            user.state = ""
+            user.zip_code = ""
+            user.county = ""
+            user.country = ""
+        
+        if request.POST['receive_promotion'] == "Yes":
+            user.receive_promotions = True
+        else:
+            user.receive_promotions = False
+
+        user.first_name = request.POST['userFirst_name']
+        user.last_name = request.POST['userLast_name']
+        user.phone = request.POST['userPhone']
+        user.street = request.POST['userStreet']
+        user.city = request.POST['userCity']
+        user.state = request.POST['userState']
+        user.zip_code = request.POST['userZip']
+        user.county = request.POST['userCounty']
+        user.country = request.POST['userCountry']
+
+        user.save()
+        return render(request, 'bookstore/editprofile.html')
+    else:
+        return render(request, 'bookstore/editprofile.html')
 
 
 def search(request):
     return render(request, 'bookstore/search.html')
+
+def browse_books(request):
+    return render(request, 'bookstore/browse-books.html')
+
+def cart(request):
+    return render(request, 'bookstore/cart.html')
+
+def admin_home(request):
+    return render(request, 'bookstore/admin-home.html')
+
+def order_history(request):
+    return render(request, 'bookstore/orderHistory.html')

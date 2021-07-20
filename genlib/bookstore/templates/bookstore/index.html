@@ -31,8 +31,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search">
+              <form class="d-flex" method="POST">
+                  {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
                 <button class="btn search-button" type="submit">Search</button>
               </form>
             </li>
@@ -61,7 +62,7 @@
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                 <li><a class="dropdown-item" href="/admin-home.html">Admin Portal</a></li>
                 <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
