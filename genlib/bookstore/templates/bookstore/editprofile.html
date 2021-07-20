@@ -68,13 +68,23 @@
 
     </div>
   </section>
-
+  {% if request.user.is_authenticated %}
   <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
       <div class="col-md-3 border-right">
         <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px"
-            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">Jhon Doe</span><span
-            class="text-black-50">email@emailemail.com</span><span> </span></div>
+            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">{{user.name}}</span><span
+            class="text-black-50">{{user.email}}</span><span> </span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center"><span>Address in system</span></div>
+        <div class="col-md-12">{{user.Address}}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
+              Delete Address
+            </label>
+          </div>
+        </div>
       </div>
       <div class="col-md-5 border-right">
         <div class="p-3 py-5">
@@ -82,18 +92,15 @@
             <h4 class="text-right">Profile Settings</h4>
           </div>
           <div class="row mt-2">
-            <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" placeholder="John" value=""></div>
-            <div class="col-md-6"><label class="labels">Middle Name</label><input type="text" class="form-control" value="" placeholder="B"></div>
-            <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value="" placeholder="Doe"></div>
+            <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" value=""></div>
+            <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value=""></div>
           </div>
           <div class="row mt-3">
-            <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number" value=""></div>
-            <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1" value=""></div>
-            <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-            <div class="col-md-12"><label class="labels">City</label><input type="text" class="form-control" placeholder="eg: Athens" value=""></div>
-            <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="ZipCode" value=""></div>
-            <div class="col-md-12"><label class="labels">County</label><input type="text" class="form-control" placeholder="eg: Clarke" value=""></div>
-            <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="someemail@email.com" value=""></div>
+            <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" value=""></div>
+            <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" value=""></div>
+            <div class="col-md-12"><label class="labels">City</label><input type="text" class="form-control" value=""></div>
+            <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" value=""></div>
+            <div class="col-md-12"><label class="labels">County</label><input type="text" class="form-control" value=""></div>
           </div>
           <div class="row mt-3">
             <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
@@ -105,10 +112,9 @@
       <div class="col-md-4">
         <div class="p-3 py-5">
           <div class="d-flex justify-content-between align-items-center experience"><span>Change password</span></div><br>
-          <div class="col-md-12"><label class="labels">Current Password</label><input type="text" class="form-control" placeholder="Old Password" value=""></div>
-          <div class="col-md-12"><label class="labels">New Password</label><input type="text" class="form-control" placeholder="8-16, number and symbols" value=""></div>
+          <div class="col-md-12"><button class="btn btn-primary profile-button" onclick="location.href='password_reset.html'" type="button">Change Password</button></div>
           <br>
-          <div class="d-flex justify-content-between align-items-center"><span>Payment Information</span><span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;Payment</span></div>
+          <div class="d-flex justify-content-between align-items-center"><span>Payment Information</span></div>
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
@@ -169,10 +175,14 @@
               </div>
             </div>
           </div>
-          <div class="d-flex justify-content-between align-items-center"><span>Cards in system</span></div>
-          <div class="col-md-12">- MasterCard ending in 7985
-            <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
-            <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+          <div class="d-flex justify-content-between align-items-center"><span>Card in system</span></div>
+          <div class="col-md-12">{{user.card}}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+              <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
+                Delete card
+              </label>
+            </div>
           </div>
         </div>
       </div>

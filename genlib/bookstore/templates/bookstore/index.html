@@ -54,29 +54,29 @@
             <!-- Else show Edit Profile and Sign Out -->
             {% else %}
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fa fa-user"></i><b>&nbsp;Profile</b>
-                </a>
-                {% if user.is_staff %}
-                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                  <li><a class="dropdown-item" href="admin-home.html">Admin Portal</a></li>
-                  <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                  <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="/signout">Sign out</a></li>
-                </ul>
-                {% else %}
-                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                  <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                  <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item" href="/signout">Sign out</a></li>
-                </ul>
-                {% endif %}
+              <a href="#" class="nav-link dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-user"></i><b>&nbsp;Profile</b>
+              </a>
+              {% if user.is_staff %}
+              <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                <li><a class="dropdown-item" href="admin-home.html">Admin Portal</a></li>
+                <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
+                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+              </ul>
+              {% else %}
+              <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
+                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+              </ul>
+              {% endif %}
             </li>
             {% endif %}
           </ul>
@@ -192,10 +192,10 @@
           <h1 class="top-selling-heading big-heading">Top Sellers of the week</h1>
         </div>
         <div class="navi-btn col-lg-6 text-center">
-          <a class="btn prev-btn mb-3 mr-1" href="#topsellers1" role="button" data-slide="prev">
+          <a class="btn prev-btn mb-3 mr-1" href="#topsellers1" data-bs-slide="prev">
             <i class="fa fa-arrow-left"></i>
           </a>
-          <a class="btn next-btn mb-3 " href="#topsellers1" role="button" data-slide="next">
+          <a class="btn next-btn mb-3 " href="#topsellers1" data-bs-slide="next">
             <i class="fa fa-arrow-right"></i>
           </a>
         </div>
