@@ -2,11 +2,12 @@ function validation() {
   var pass1 = document.signupForm.userPassword;
   var pass2 = document.signupForm.userPassword2;
   var name = document.signupForm.userName;
+  var name2 = document.signupForm.userName2;
   var email = document.signupForm.userEmail;
   var checkBox = document.getElementById("checkBox");
   if (checkAll(name, email, pass1, pass2)) {
     if (passValidation(pass1, pass2, 8, 16)) {
-      if (nameValid(name)) {
+      if (nameValid(name, name2)) {
         if (validateEmail(email)) {
           if (validateTerms(checkBox)) {
             window.location.href = "signup-confirmation.html"
@@ -64,13 +65,17 @@ function passValidation(pass1, pass2, mx, my) {
   return true;
 }
 
-function nameValid(name) {
+function nameValid(name, name2) {
   var letters = /^[A-Za-z]+$/;
   if (name.value.match(letters)) {
     name.classList.remove("border-danger");
     return true;
+  } else if (name2.value.match(letters)) {
+    name2.classList.remove("border-danger");
+    return true;
   } else {
     name.classList.add("border-danger");
+    name2.classList.add("border-danger");
     alert('Name can not have numbers or be empty');
     name.focus();
     return false;
