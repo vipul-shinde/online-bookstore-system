@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookstore.apps.BookstoreConfig',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -131,5 +132,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'kushaj123456@gmail.com'
 EMAIL_HOST_PASSWORD = 'kushaj12345678'
 
-LOGIN_URL = '/signin'
-LOGIN_REDIRECT_URL = '/signin'
+LOGIN_URL = '/login.html'
+LOGIN_REDIRECT_URL = '/login.html'

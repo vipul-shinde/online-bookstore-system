@@ -59,22 +59,22 @@
                 </a>
                 {% if user.is_staff %}
                 <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                  <li><a class="dropdown-item" href="#">Admin Portal</a></li>
-                  <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-                  <li><a class="dropdown-item" href="#">Order History</a></li>
+                  <li><a class="dropdown-item" href="admin-home.html">Admin Portal</a></li>
+                  <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
+                  <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
                   <li>
                     <hr class="dropdown-divider">
                   </li>
-                  <li><a class="dropdown-item" href="#">Sign out</a></li>
+                  <li><a class="dropdown-item" href="/signout">Sign out</a></li>
                 </ul>
                 {% else %}
                 <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                  <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-                  <li><a class="dropdown-item" href="#">Order History</a></li>
+                  <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
+                  <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
                   <li>
                     <hr class="dropdown-divider">
                   </li>
-                  <li><a class="dropdown-item" href="#">Sign out</a></li>
+                  <li><a class="dropdown-item" href="/signout">Sign out</a></li>
                 </ul>
                 {% endif %}
             </li>

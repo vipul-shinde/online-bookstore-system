@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
+from django.contrib.auth.decorators import login_required
 
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -92,32 +93,48 @@ def signup_confirmation(request):
 
 
 def login(request):
-    # if request.user.is_authenticated:
-    #     # return redirect('index')
-    # else:
-    if request.method == "POST":
-        email = request.POST['userEmail']
-        password = request.POST['userPassword']
+    if request.user.is_authenticated:
+        return redirect('index')
+    else:
+        if request.method == "POST":
+            email = request.POST['userEmail']
+            password = request.POST['userPassword']
 
-        user = authenticate(request, username=email, password=password)
+            flags = {
+                'email_flag': False,
+                'active_flag': False,
+                'password_flag': False,
+                'suspended_flag': False,
+            }
 
-        if user is not None:
+            users = User.objects.filter(email=email)
+            if len(users) == 0:
+                flags['email_flag'] = True
+                return render(request, 'bookstore/login.html', flags)
+            
+            user = authenticate(request, username=email, password=password)
+            if user is None:
+                flags['password_flag'] = True
+                return render(request, 'bookstore/login.html', flags)
+
+            if not users[0].is_active:
+                flags['active_flag'] = True
+                return render(request, 'bookstore/login.html', flags)
+
             if user.is_suspended:
-                return render(request, 'bookstore/suspended.html')
-            else:
-                auth_login(request, user)
-                return redirect('index')
+                flags['suspended_flag'] = True
+                return render(request, 'bookstore/login.html', flags)
+
+            auth_login(request, user)
+            return redirect('index')
         else:
-            messages.info(request, "Email/password is incorrect")
-
-    return render(request, 'bookstore/login.html')
+            return render(request, 'bookstore/login.html')
 
 
-# def getCartCount(request):
-#     if request.user.is_authenticated:
-#         return 10
-#     else:
-#         return ""
+def signout(request):
+    logout(request)
+    return redirect('login')
+
 
 def book_detail(request, title):
     book = Book.objects.get(title=title)
@@ -129,3 +146,30 @@ def book_detail(request, title):
         # 'cartCount': getCartCount(request),
     }
     return render(request, 'bookstore/productDetails.html', context)
+
+
+@login_required
+def edit_profile(request):
+    context = {
+        'cartCount': getCartCount(request)
+    }
+    return render(request, 'bookstore/editprofile.html', context)
+
+
+def getCartCount(request):
+    if request.user.is_authenticated:
+        return 10
+    else:
+        return ""
+
+@login_required
+def password_change_complete(request):
+    send_mail(
+        "Your account password has changed",
+        [request.user.email],
+        fail_silently=False,
+    )
+    return redirect('edit_profile')
+
+def password_reset_complete(request):
+    return redirect('login')

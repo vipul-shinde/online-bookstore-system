@@ -38,7 +38,7 @@
           <input type="checkbox" value="remember" name="checks[]"> Remember me
         </label>
       </div>
-      <a href="reset-password.html">Forgot password?</a>
+      <a href="{% url 'password_reset' %}">Forgot password?</a>
       <button class="w-100 btn signin-button" type="submit">Sign in</button>
       <hr>
       <div class="create-account">
@@ -48,6 +48,19 @@
       <p class="mt-5 mb-3 text-muted">&copy; 2010-2021</p>
     </form>
   </main>
+
+  {% if email_flag %}
+    <script>alert("Entered email is not in database")</script>
+  {% endif %}
+  {% if active_flag %}
+    <script>alert("Current account is not activated. Go to your email to activate it.")</script>
+  {% endif %}
+  {% if password_flag %}
+    <script>alert("Entered password is incorrect")</script>
+  {% endif %}
+  {% if suspended_flag %}
+    <script>alert("Account is currently suspended")</script>
+  {% endif %}
 </body>
 
 </html>
