@@ -80,12 +80,12 @@
     <div class="container-fluid-contentMain" id="product-section">
       <div class="row  bg-white">
         <div class="col-md-6">
-          <img src="..\..\static\images\book.jpg" alt="book1" style="max-width:100%;">
+          <img src="..\..\static\{{ book.image_path }}" alt="book1">
         </div>
         <div class=" col-md-6">
           <div class="row">
             <div class="col-md-12">
-              <h1>Book</h1>
+              <h1>{{ book.title }}</h1>
             </div>
           </div><!-- end row-->
           <div class="row">
@@ -97,7 +97,7 @@
           <div class="row">
             <div class="col-md-12">
               <p class="description">
-                Book that has story. Written by book. The book is a book top seller.
+                {{ book.description }}
               </p>
             </div>
           </div><!-- end row -->
@@ -117,7 +117,7 @@
           </div><!-- end row -->
           <div class="row">
             <div class="col-md-12 bottom-rule">
-              <h4 class="product-price">$29.99</h4>
+              <h4 class="product-price">{{ book.cost }}</h4>
             </div>
           </div><!-- end row -->
 

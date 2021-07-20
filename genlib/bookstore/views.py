@@ -83,7 +83,7 @@ def activate(request, uidb64, token):
         messages.success(request, "Account is active. Sign in your account.")
     else:
         messages.error(request, "Account could not be activated.")
-    
+
     return redirect('login')
 
 
@@ -118,3 +118,14 @@ def login(request):
 #         return 10
 #     else:
 #         return ""
+
+def book_detail(request, title):
+    book = Book.objects.get(title=title)
+    context = {
+        'title': book.title,
+        'book': book,
+        #'other_books': Book.objects.filter(genre=book.genre).order_by('?'),
+        'books': Book.objects.all(),
+        # 'cartCount': getCartCount(request),
+    }
+    return render(request, 'bookstore/productDetails.html', context)
