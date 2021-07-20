@@ -23,7 +23,7 @@
 
     <div class="container-fluid">
       <nav class="navbar navbar-expand-lg">
-        <a class="navbar-brand" href="index.html">Genlib</a>
+        <a class="navbar-brand" href="/index.html">Genlib</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -73,11 +73,11 @@
     <div class="row">
       <div class="col-md-3 border-right">
         <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px"
-            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">{{user.name}}</span><span
+            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">{{user.first_name}} {{ user.last_name }}</span><span
             class="text-black-50">{{user.email}}</span><span> </span>
         </div>
         <div class="d-flex justify-content-between align-items-center"><span>Address in system</span></div>
-        <div class="col-md-12">{{user.Address}}
+        <div class="col-md-12">{{user.street}} {{ user.city }} {{ user.state }} {{ user.zip_code }} {{ user.country }}
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
             <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
@@ -97,11 +97,12 @@
           </div>
           <div class="row mt-3">
             <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" value=""></div>
-            <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" value=""></div>
+            <div class="col-md-12"><label class="labels">Street</label><input type="text" class="form-control" value=""></div>
             <div class="col-md-12"><label class="labels">City</label><input type="text" class="form-control" value=""></div>
             <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" value=""></div>
             <div class="col-md-12"><label class="labels">County</label><input type="text" class="form-control" value=""></div>
-          </div>
+        </div>
+            
           <div class="row mt-3">
             <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
             <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
@@ -112,7 +113,7 @@
       <div class="col-md-4">
         <div class="p-3 py-5">
           <div class="d-flex justify-content-between align-items-center experience"><span>Change password</span></div><br>
-          <div class="col-md-12"><button class="btn btn-primary profile-button" onclick="location.href='password_reset.html'" type="button">Change Password</button></div>
+          <div class="col-md-12"><a class="btn btn-primary profile-button" type="button" href="{% url 'change-password' %}">Change Password</a></div>
           <br>
           <div class="d-flex justify-content-between align-items-center"><span>Payment Information</span></div>
           <div class="row">
@@ -179,8 +180,12 @@
           <div class="col-md-12">{{user.card}}
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-              <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
+              <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">  
                 Delete card
+              </label><br>
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+              <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">  
+                Save card
               </label>
             </div>
           </div>
@@ -188,6 +193,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
 
 </body>
 

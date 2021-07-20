@@ -9,7 +9,7 @@ class UserAdminConfig(UserAdmin):
 
     fieldsets = (
         ("Account", {"fields": ("first_name", "last_name", "email", "password", "phone")}),
-        ("Address", {"fields": ("street", "city", "state", "zip_code")}),
+        ("Address", {"fields": ("street", "city", "state", "zip_code", "county", "country")}),
         ("Payment", {"fields": ("card_name", "card_num", "card_exp", "card_cvv")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "is_suspended")}),
         ("Promotions", {"fields": ("receive_promotions",)}),

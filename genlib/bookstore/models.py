@@ -74,6 +74,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(max_length=20, null=True, blank=True)
     state = models.CharField(max_length=20, null=True, blank=True)
     zip_code = models.CharField(max_length=5, null=True, blank=True)
+    county = models.CharField(max_length=10, null=True, blank=True)
+    country = models.CharField(max_length=10, null=True, blank=True)
 
     card_name = encrypt(models.CharField(max_length=100, null=True, blank=True))
     card_num = encrypt(models.CharField(max_length=16, null=True, blank=True))

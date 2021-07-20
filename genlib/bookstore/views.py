@@ -112,13 +112,13 @@ def login(request):
                 flags['email_flag'] = True
                 return render(request, 'bookstore/login.html', flags)
             
+            if not users[0].is_active:
+                flags['active_flag'] = True
+                return render(request, 'bookstore/login.html', flags)
+
             user = authenticate(request, username=email, password=password)
             if user is None:
                 flags['password_flag'] = True
-                return render(request, 'bookstore/login.html', flags)
-
-            if not users[0].is_active:
-                flags['active_flag'] = True
                 return render(request, 'bookstore/login.html', flags)
 
             if user.is_suspended:
@@ -153,6 +153,8 @@ def edit_profile(request):
     context = {
         'cartCount': getCartCount(request)
     }
+    if request.method == "POST":
+        
     return render(request, 'bookstore/editprofile.html', context)
 
 
@@ -164,11 +166,11 @@ def getCartCount(request):
 
 @login_required
 def password_change_complete(request):
-    send_mail(
-        "Your account password has changed",
-        [request.user.email],
-        fail_silently=False,
-    )
+    # send_mail(
+    #     "Your account password has changed",
+    #     [request.user.email],
+    #     fail_silently=False,
+    # )
     return redirect('edit_profile')
 
 def password_reset_complete(request):
