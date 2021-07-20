@@ -154,12 +154,8 @@ def edit_profile(request):
         'cartCount': getCartCount(request)
     }
     if request.method == "POST":
-<<<<<<< HEAD
-        return render(request, 'bookstore/editprofile.html', context)
-=======
         pass
     return render(request, 'bookstore/editprofile.html', context)
->>>>>>> 70587e649782ba3b07bf97467dfe5177a3c1dd1f
 
 
 def getCartCount(request):
