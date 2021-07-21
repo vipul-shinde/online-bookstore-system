@@ -1,9 +1,9 @@
 function validation() {
-  var cvv = document.editForm.userCVV;
-  var name = document.editForm.userCCName;
-  var year = document.editForm.userCCYear;
-  var month = document.editForm.userCCMonth;
-  var number = document.editForm.userCCNumber;
+  var cvv = document.editForm.card_cvv;
+  var name = document.editForm.card_name;
+  var year = document.editForm.card_year;
+  var month = document.editForm.card_month;
+  var number = document.editForm.card_num;
   var check = document.editForm.something;
   var edit = document.editForm.card_option;
   if (checkAll(cvv, name, year, month, number, edit)) {
