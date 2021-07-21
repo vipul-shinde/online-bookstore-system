@@ -99,7 +99,7 @@
     </div>
   </section>
   <div class="container rounded bg-white mt-5 mb-5">
-    <form method="POST">
+    <form name="editForm" method="POST">
       {% csrf_token %}
       <div class="row border border-5">
         <div class="col-md-3 border-end border border-2">
@@ -124,43 +124,38 @@
             </div>
           </div>
         </div>
-        <div class="col-md-5 border-end border border-2">
+        <div class="col-md-5 border-end border border-2" id="trialerror">
           <div class="p-3 py-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h4 class="text-right">Profile Settings</h4>
             </div>
             <div class="row mt-2">
-              <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" value="{{ request.user.first_name }}" name="userFirst_name"></div>
-              <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value="{{ request.user.last_name }}" name="userLast_name"></div>
+              <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" value="" name="userFirst_name"></div>
+              <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value="" name="userLast_name"></div>
             </div>
             <div class="row mt-3">
-              <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" value="{{ request.user.phone }}" name="userPhone"></div>
-              <div class="col-md-12"><label class="labels">Street</label><input type="text" class="form-control" value="{{ request.user.street }}" name="userStreet"></div>
-              <div class="col-md-12"><label class="labels">City</label><input type="text" class="form-control" value="{{ request.user.city }}" name="userCity"></div>
-              <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" value="{{ request.user.zip_code }}" name="userZip"></div>
-              <div class="col-md-12"><label class="labels">County</label><input type="text" class="form-control" value="{{ request.user.county }}" name="userCounty"></div>
+              <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" value="" name="userPhone"></div>
+              <div class="col-md-12"><label class="labels">Street</label><input type="text" class="form-control" value="" name="userStreet"></div>
+              <div class="col-md-12"><label class="labels">City</label><input type="text" class="form-control" value="" name="userCity"></div>
+              <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" value="" name="userZip"></div>
+              <div class="col-md-12"><label class="labels">County</label><input type="text" class="form-control" value="" name="userCounty"></div>
             </div>
             <div class="row mt-3">
-              <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value="{{ request.user.country }}" name="userCountry"></div>
-              <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="{{ request.user.state }}" placeholder="state" name="userState"></div>
+              <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value="" name="userCountry"></div>
+              <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state" name="userState"></div>
             </div>
             <div class="row mt-3">
               <div class="form-check">
                 <div class="form-group col-sm-12" style="margin-top:0em;" for="flexCheckDefault">
                   <label for="promotion">Receive promotional offers</label>
                   <select id="promotion" name="receive_promotion">
-                    {% if request.user.receive_promotions == True%}
-                        <option>Yes</option>
-                        <option>No</option>
-                    {% else %}
-                        <option>No</option>
-                        <option>Yes</option>
-                    {% endif %}
+                    <option>Yes</option>
+                    <option>No</option>
                   </select>
                 </div>
               </div>
             </div>
-            <div class="mt-5 text-center"><button class="btn explore-button" type="submit" name="submit" value="Submit">Save Profile</button></div>
+            <div class="mt-5 text-center"><button class="btn explore-button" type="submit" name="submit" value="Submit"  onClick="validation();" >Save Profile</button></div>
           </div>
         </div>
         <div class="col-md-4">
@@ -172,7 +167,7 @@
               <div class="col-sm-12">
                 <div class="form-group">
                   <label for="name">Name</label>
-                  <input class="form-control" id="name" type="text" placeholder="Enter your name" name="card_name">
+                  <input class="form-control" id="name" type="text" placeholder="Enter your name" name=userCCName>
                 </div>
               </div>
             </div>
@@ -181,7 +176,7 @@
                 <div class="form-group">
                   <label for="ccnumber">Credit Card Number</label>
                   <div class="input-group">
-                    <input class="form-control" type="text" placeholder="0000 0000 0000 0000" name="card_num">
+                    <input class="form-control" type="number" placeholder="0000000000000000" autocomplete="email" name="userCCNumber" maxlength="16" minlength="16">
                     <div class="input-group-append">
                     </div>
                   </div>
@@ -191,7 +186,8 @@
             <div class="row">
               <div class="form-group col-sm-4">
                 <label for="ccmonth">Month</label>
-                <select class="form-control" id="ccmonth" name="card_month">
+                <select class="form-control" id="ccmonth" name="userCCMonth">
+                  <option selected disabled hidden> Select </option>
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -208,7 +204,8 @@
               </div>
               <div class="form-group col-sm-4">
                 <label for="ccyear">Year</label>
-                <select class="form-control" id="ccyear" name="card_year">
+                <select class="form-control" id="ccyear" name="userCCYear">
+                  <option selected disabled hidden> Select </option>
                   <option>2021</option>
                   <option>2022</option>
                   <option>2023</option>
@@ -224,23 +221,18 @@
               <div class="col-sm-4">
                 <div class="form-group">
                   <label for="cvv">CVV/CVC</label>
-                  <input class="form-control" id="cvv" type="password" placeholder="123" name="card_cvv">
+                  <input class="form-control" id="cvv" type="password" placeholder="123" name="userCVV" maxlength="3" minlength="3">
                 </div>
               </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center"><span><strong>Card in system</strong></span></div>
-            <div class="col-md-12"> 
-                {% if user.card_four == "" %}
-                    No card in system    
-                {% else %}
-                    {{user.card_four}}
-                {% endif %}
-
+            <div class="d-flex justify-content-between align-items-center"><span>Card in system</span></div>
+            <div class="col-md-12">{{user.card}}
+             <input type="hidden" name="something" value="working">
               <div class="form-check">
                 <div class="form-group col-sm-12" style="margin-top:0em;" for="flexCheckDefault">
                   <label for="paymentCard">Card </label>
                   <select id="paymentCard" name="card_option">
-                    <option selected disabled hidden> Select </option>
+                    <option selected disabled hidden>Select</option>
                     <option>Delete</option>
                     <option>Save</option>
                   </select>
@@ -255,10 +247,7 @@
 
   <!-- Bootsrap Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
-  {% if delete_flag %}
-    <script>alert("You do not have any card stored. Select 'Save' instead.")</script>
-  {% endif %}
+  <script src="..\..\static\js\editProfile.js"></script>
 </body>
 
 </html>
