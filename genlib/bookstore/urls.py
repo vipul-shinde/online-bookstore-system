@@ -13,7 +13,14 @@ urlpatterns = [
     path('login.html', views.login, name='login'),
     path('productDetails/<str:title>/', views.book_detail, name='book-details'),
     path('signout', views.signout, name='signout'),
+
     path('editprofile.html', views.edit_profile, name='edit_profile'),
+    path('search.html', views.search, name='search'),
+    path('browse-books.html', views.browse_books, name='browse_books'),
+    path('cart.html', views.cart, name='cart'),
+    path('admin-home.html', views.admin_home, name='admin_home'),
+    path('orderHistory.html', views.order_history, name='order_history'),
+
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name='bookstore/password-reset/password_reset.html',

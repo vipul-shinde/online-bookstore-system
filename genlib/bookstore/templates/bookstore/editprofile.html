@@ -30,7 +30,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <form class="d-flex">
+              <form class="d-flex" method="POST">
                 <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search">
                 <button class="btn search-button" type="submit">Search</button>
               </form>
@@ -57,9 +57,9 @@
               </a>
               {% if user.is_staff %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                <li><a class="dropdown-item" href="admin-home.html">Admin Portal</a></li>
+                <li><a class="dropdown-item" href="/admin-home.html">Admin Portal</a></li>
                 <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
@@ -68,7 +68,7 @@
               {% else %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                 <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
@@ -98,141 +98,167 @@
 
     </div>
   </section>
-  {% if request.user.is_authenticated %}
   <div class="container rounded bg-white mt-5 mb-5">
-    <div class="row border border-5">
-      <div class="col-md-3 border-end border border-2">
-        <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px"
-            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">{{user.first_name}} {{ user.last_name }}</span><span
-            class="text-black-50">{{user.email}}</span><span> </span>
-        </div>
-        <div class="d-flex justify-content-between align-items-center"><span>Address in system</span></div>
-        <div class="col-md-12">{{user.street}} {{ user.city }} {{ user.state }} {{ user.zip_code }} {{ user.country }}
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
-              Delete Address
-            </label>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="row border border-5">
+        <div class="col-md-3 border-end border border-2">
+          <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px"
+              src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">{{user.first_name}} {{ user.last_name }}</span><span
+              class="text-black-50">{{user.email}}</span><span> </span>
           </div>
-        </div>
-      </div>
-      <div class="col-md-5 border-end border border-2">
-        <div class="p-3 py-5">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="text-right">Profile Settings</h4>
-          </div>
-          <div class="row mt-2">
-            <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" value=""></div>
-            <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value=""></div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" value=""></div>
-            <div class="col-md-12"><label class="labels">Street</label><input type="text" class="form-control" value=""></div>
-            <div class="col-md-12"><label class="labels">City</label><input type="text" class="form-control" value=""></div>
-            <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" value=""></div>
-            <div class="col-md-12"><label class="labels">County</label><input type="text" class="form-control" value=""></div>
-          </div>
-
-          <div class="row mt-3">
-            <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
-            <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
-          </div>
-          <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+          <div class="d-flex justify-content-between align-items-center"><span><strong>Address in system</strong></span></div>
+          <div class="col-md-12">
+            {% if user.street != "" %} {{user.street}} {% endif %}
+            {% if user.city != "" %} {{user.city}} {% endif %}
+            {% if user.state != "" %} {{user.state}} {% endif %}
+            {% if user.zip_code != "" %} {{user.zip_code}} {% endif %}
+            {% if user.county != "" %} {{user.county}} {% endif %}
+            {% if user.country != "" %} {{user.country}} {% endif %}
+            {% if user.street == "" %} No address in database {% endif %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="flexCheckDefault" value="delete_address" name="checks[]">
               <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
-                Unsubscribe from promotional offers
+                Delete Address
               </label>
             </div>
-          <div class="mt-5 text-center"><button class="btn explore-button" type="button">Save Profile</button></div>
+          </div>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="p-3 py-5">
-          <div class="col-md-12"><a class="btn explore-button" type="button" href="{% url 'change-password' %}">Change Password</a></div>
-          <br>
-          <div class="d-flex justify-content-between align-items-center"><strong>Payment Information: </strong></div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input class="form-control" id="name" type="text" placeholder="Enter your name">
+        <div class="col-md-5 border-end border border-2">
+          <div class="p-3 py-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="text-right">Profile Settings</h4>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-6"><label class="labels">First Name</label><input type="text" class="form-control" value="{{ request.user.first_name }}" name="userFirst_name"></div>
+              <div class="col-md-6"><label class="labels">Last Name</label><input type="text" class="form-control" value="{{ request.user.last_name }}" name="userLast_name"></div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" value="{{ request.user.phone }}" name="userPhone"></div>
+              <div class="col-md-12"><label class="labels">Street</label><input type="text" class="form-control" value="{{ request.user.street }}" name="userStreet"></div>
+              <div class="col-md-12"><label class="labels">City</label><input type="text" class="form-control" value="{{ request.user.city }}" name="userCity"></div>
+              <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" value="{{ request.user.zip_code }}" name="userZip"></div>
+              <div class="col-md-12"><label class="labels">County</label><input type="text" class="form-control" value="{{ request.user.county }}" name="userCounty"></div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value="{{ request.user.country }}" name="userCountry"></div>
+              <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="{{ request.user.state }}" placeholder="state" name="userState"></div>
+            </div>
+            <div class="row mt-3">
+              <div class="form-check">
+                <div class="form-group col-sm-12" style="margin-top:0em;" for="flexCheckDefault">
+                  <label for="promotion">Receive promotional offers</label>
+                  <select id="promotion" name="receive_promotion">
+                    {% if request.user.receive_promotions == True%}
+                        <option>Yes</option>
+                        <option>No</option>
+                    {% else %}
+                        <option>No</option>
+                        <option>Yes</option>
+                    {% endif %}
+                  </select>
+                </div>
               </div>
             </div>
+            <div class="mt-5 text-center"><button class="btn explore-button" type="submit" name="submit" value="Submit">Save Profile</button></div>
           </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="ccnumber">Credit Card Number</label>
-                <div class="input-group">
-                  <input class="form-control" type="text" placeholder="0000 0000 0000 0000" autocomplete="email">
-                  <div class="input-group-append">
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 py-5">
+            <div class="col-md-12"><a class="btn explore-button" type="button" href="{% url 'change-password' %}">Change Password</a></div>
+            <br>
+            <div class="d-flex justify-content-between align-items-center"><strong>Payment Information: </strong></div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input class="form-control" id="name" type="text" placeholder="Enter your name" name="card_name">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="ccnumber">Credit Card Number</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" placeholder="0000 0000 0000 0000" name="card_num">
+                    <div class="input-group-append">
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-sm-4">
-              <label for="ccmonth">Month</label>
-              <select class="form-control" id="ccmonth">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
-              </select>
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="ccyear">Year</label>
-              <select class="form-control" id="ccyear">
-                <option>2021</option>
-                <option>2022</option>
-                <option>2023</option>
-                <option>2024</option>
-                <option>2025</option>
-                <option>2026</option>
-                <option>2027</option>
-                <option>2028</option>
-                <option>2029</option>
-                <option>2030</option>
-              </select>
-            </div>
-            <div class="col-sm-4">
-              <div class="form-group">
-                <label for="cvv">CVV/CVC</label>
-                <input class="form-control" id="cvv" type="text" placeholder="123">
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="ccmonth">Month</label>
+                <select class="form-control" id="ccmonth" name="card_month">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                  <option>11</option>
+                  <option>12</option>
+                </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="ccyear">Year</label>
+                <select class="form-control" id="ccyear" name="card_year">
+                  <option>2021</option>
+                  <option>2022</option>
+                  <option>2023</option>
+                  <option>2024</option>
+                  <option>2025</option>
+                  <option>2026</option>
+                  <option>2027</option>
+                  <option>2028</option>
+                  <option>2029</option>
+                  <option>2030</option>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="cvv">CVV/CVC</label>
+                  <input class="form-control" id="cvv" type="text" placeholder="123" name="card_cvv">
+                </div>
               </div>
             </div>
-          </div>
-          <div class="d-flex justify-content-between align-items-center"><span>Card in system</span></div>
-          <div class="col-md-12">{{user.card}}
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-              <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
-                Delete card
-              </label><br>
-              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-              <label class="form-check-label" style="margin-top:0em;" for="flexCheckDefault">
-                Save card
-              </label>
+            <div class="d-flex justify-content-between align-items-center"><span><strong>Card in system</strong></span></div>
+            <div class="col-md-12"> 
+                {% if user.card_four == "" %}
+                    No card in system    
+                {% else %}
+                    {{user.card_four}}
+                {% endif %}
+
+              <div class="form-check">
+                <div class="form-group col-sm-12" style="margin-top:0em;" for="flexCheckDefault">
+                  <label for="paymentCard">Card </label>
+                  <select id="paymentCard" name="card_option">
+                    <option selected disabled hidden> Select </option>
+                    <option>Delete</option>
+                    <option>Save</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
+
+  <!-- Bootsrap Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  {% if delete_flag %}
+    <script>alert("You do not have any card stored. Select 'Save' instead.")</script>
   {% endif %}
-
-    <!-- Bootsrap Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
 </body>
 
 </html>
