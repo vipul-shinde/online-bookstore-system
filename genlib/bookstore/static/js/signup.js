@@ -5,19 +5,36 @@ function validation() {
   var name2 = document.signupForm.userLast_name;
   var email = document.signupForm.userEmail;
   var number = document.signupForm.userPhone;
+  var check = document.signupForm.something;
   var checkBox = document.getElementById("checkBox");
   if (checkAll(name, name2, email, pass1, pass2, number)) {
     if (passValidation(pass1, pass2, 8, 16)) {
       if (nameValid(name, name2)) {
         if (validateEmail(email)) {
           if (validateTerms(checkBox)) {
+            //   return true;
             window.location.href = "signup-confirmation.html"
-          }
-        }
+          }else {
+            check.value = "not_working";
+          return false;
       }
-    }
+        }else {
+            check.value = "not_working";
+          return false;
+      }
+      }else {
+        check.value = "not_working";
+      return false;
   }
-  return false;
+    }else {
+        check.value = "not_working";
+      return false;
+  }
+  }
+  else {
+        check.value = "not_working";
+      return false;
+  }
 }
 
 function checkAll(name, name2, email, pass1, pass2, number) {

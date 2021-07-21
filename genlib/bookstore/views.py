@@ -35,6 +35,8 @@ def index(request):
 
 def signup(request):
     if request.method == "POST":
+        if request.POST['something'] == "not_working":
+            return render(request, 'bookstore/sign-up.html', {'email_flag': False})
         first_name = request.POST['userFirst_name']
         last_name = request.POST['userLast_name']
         phone = request.POST['userPhone']
@@ -73,7 +75,7 @@ def signup(request):
 
         return render(request, 'bookstore/signup-confirmation.html')
     else:
-        return render(request, 'bookstore/sign-up.html')
+        return render(request, 'bookstore/sign-up.html', {'email_flag': False})
 
 
 def activate(request, uidb64, token):
@@ -179,6 +181,8 @@ def getCartCount(request):
 @login_required
 def edit_profile(request):
     if request.method == "POST":
+        if request.POST['something'] == "not_working":
+            return render(request, 'bookstore/editprofile.html')
         changes_made = []
         orig_user = deepcopy(request.user)
         user = request.user
