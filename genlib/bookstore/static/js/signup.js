@@ -1,11 +1,12 @@
 function validation() {
   var pass1 = document.signupForm.userPassword;
   var pass2 = document.signupForm.userPassword2;
-  var name = document.signupForm.userName;
-  var name2 = document.signupForm.userName2;
+  var name = document.signupForm.userFirst_name;
+  var name2 = document.signupForm.userLast_name;
   var email = document.signupForm.userEmail;
+  var number = document.signupForm.userName;
   var checkBox = document.getElementById("checkBox");
-  if (checkAll(name, email, pass1, pass2)) {
+  if (checkAll(name, name2, email, pass1, pass2, number)) {
     if (passValidation(pass1, pass2, 8, 16)) {
       if (nameValid(name, name2)) {
         if (validateEmail(email)) {
@@ -19,17 +20,23 @@ function validation() {
   return false;
 }
 
-function checkAll(name, email, pass1, pass2) {
+function checkAll(name, name2, email, pass1, pass2, number) {
   var pass1_len = pass1.value.length;
   var pass2_len = pass2.value.length;
   if (pass1_len == 0) {
     pass1.classList.add("border-danger");
+  }
+  if (name2.value.length == 0) {
+    name2.classList.add("border-danger");
   }
   if (pass2_len == 0) {
     pass2.classList.add("border-danger");
   }
   if (name.value.length == 0) {
     name.classList.add("border-danger");
+  }
+  if (number.value.length == 0) {
+    number.classList.add("border-danger");
   }
   if (email.value.length == 0) {
     email.classList.add("border-danger");
