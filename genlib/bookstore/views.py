@@ -13,6 +13,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from django.http import HttpResponseRedirect, HttpResponse
 
+from copy import deepcopy
 from .models import *
 from .tokens import account_activation_token
 
@@ -53,7 +54,7 @@ def signup(request):
         user = User(first_name=first_name, last_name=last_name, email=email,
                     receive_promotions=receive_promotions, phone=phone,
                     street="", city="", state="", zip_code="", county="",
-                    country="")
+                    country="", card_four="")
         user.set_password(password)
         user.save()
 
@@ -157,11 +158,10 @@ def book_detail(request, title):
 
 @login_required
 def password_change_complete(request):
-    # send_mail(
-    #     "Your account password has changed",
-    #     [request.user.email],
-    #     fail_silently=False,
-    # )
+    mail_subject = "Genlib account password changed"
+    mail_message = "Your account password has been changed."
+    EMAIL = EmailMessage(mail_subject, mail_message, to=[request.user.email])
+    EMAIL.send()
     return redirect('edit_profile')
 
 
@@ -179,33 +179,106 @@ def getCartCount(request):
 @login_required
 def edit_profile(request):
     if request.method == "POST":
+        changes_made = []
+        orig_user = deepcopy(request.user)
         user = request.user
         checks = request.POST.getlist("checks[]")
         
         if "delete_address" in checks:
+            changes_made.append("delete_address")
             user.street = ""
             user.city = ""
             user.state = ""
             user.zip_code = ""
             user.county = ""
             user.country = ""
-        
+        else:
+            user.street = request.POST['userStreet']
+            user.city = request.POST['userCity']
+            user.state = request.POST['userState']
+            user.zip_code = request.POST['userZip']
+            user.county = request.POST['userCounty']
+            user.country = request.POST['userCountry']
+
         if request.POST['receive_promotion'] == "Yes":
             user.receive_promotions = True
         else:
             user.receive_promotions = False
 
+        if user.receive_promotions != orig_user.receive_promotions:
+            if user.receive_promotions == True:
+                changes_made.append("add_promotion")
+            else:
+                changes_made.append("remove_promotion")
+
         user.first_name = request.POST['userFirst_name']
         user.last_name = request.POST['userLast_name']
         user.phone = request.POST['userPhone']
-        user.street = request.POST['userStreet']
-        user.city = request.POST['userCity']
-        user.state = request.POST['userState']
-        user.zip_code = request.POST['userZip']
-        user.county = request.POST['userCounty']
-        user.country = request.POST['userCountry']
+        
+        if user.first_name != orig_user.first_name:
+            changes_made.append("first_name")
+        if user.last_name != orig_user.last_name:
+            changes_made.append("last_name")
+        if user.phone != orig_user.phone:
+            changes_made.append("phone")
+        if user.street != orig_user.street:
+            changes_made.append("street")
+        if user.city != orig_user.city:
+            changes_made.append("city")
+        if user.state != orig_user.state:
+            changes_made.append("state")
+        if user.zip_code != orig_user.zip_code:
+            changes_made.append("zip_code")
+        if user.county != orig_user.county:
+            changes_made.append("county")
+        elif user.country != orig_user.country:
+            changes_made.append("country")
+
+        if request.POST.get("card_option", "Select") == "Delete":
+            if user.card_four == "":
+                return render(request, 'bookstore/editprofile.html', {'delete_flag': True})
+            changes_made.append("card_delete")
+            user.card_name = ""
+            user.card_num = ""
+            user.card_exp = ""
+            user.card_cvv = ""
+            user.card_four = ""
+        elif request.POST.get("card_option", "Select") == "Save":
+            changes_made.append("card_save")
+            user.card_name = request.POST["card_name"]
+            user.card_num = request.POST["card_num"]
+            user.card_exp = f'{request.POST["card_month"]}/{request.POST["card_year"]}'
+            user.card_cvv = request.POST["card_cvv"]
+            user.card_four = request.POST["card_num"][-4:]
 
         user.save()
+
+        message = ""
+        if "delete_address" in changes_made:
+            message += "* Your address has been deleted\n"
+        if "add_promotion" in changes_made:
+            message += "* You have opted in to receive promotions\n"
+        if "remove_promotion" in changes_made:
+            message += "* You will no longer receive promotions\n"
+        for x in ["first_name", "last_name", "phone"]:
+            if x in changes_made:
+                message += f"* Your {x} has been updated\n"
+        if "delete_address" not in changes_made:
+            for x in ["street", "city", "state", "zip_code", "county", "country"]:
+                if x in changes_made:
+                    message += f"* Your {x} has been updated\n"
+        if "card_delete" in changes_made:
+            message += f"* Your card ending in {orig_user.card_four} has been removed\n"
+        if "card_save" in changes_made:
+            message += f"* Card ending in {user.card_four} has been added to your account\n"
+
+        mail_subject = "Changes made to your genlib account"
+        mail_message = message
+
+        if mail_message != "":
+            EMAIL = EmailMessage(mail_subject, mail_message, to=[user.email])
+            EMAIL.send()
+
         return render(request, 'bookstore/editprofile.html')
     else:
         return render(request, 'bookstore/editprofile.html')

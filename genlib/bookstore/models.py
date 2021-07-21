@@ -24,8 +24,8 @@ class Book(models.Model):
 class UserManager(BaseUserManager):
     def create_user(self, first_name, last_name, email, password, 
                     receive_promotions, phone="", street="",
-                    city="", state="", zip_code="", card_name="",
-                    card_num="", card_exp="", card_cvv="",
+                    city="", state="", zip_code="", county="", country="", 
+                    card_name="", card_num="", card_exp="", card_cvv="", card_four="",
                     **kwargs):
         email = self.normalize_email(email)
         user = self.model(first_name=first_name,
@@ -38,28 +38,44 @@ class UserManager(BaseUserManager):
                           city=city,
                           state=state,
                           zip_code=zip_code,
+                          county=county,
+                          country=country,
                           card_name=card_name,
                           card_num=card_num,
                           card_exp=card_exp,
                           card_cvv=card_cvv,
+                          card_four=card_four,
                           **kwargs)
         user.set_password(password)
         user.save()
 
     def create_superuser(self, first_name, last_name, email, password, 
                          receive_promotions, phone="", street="",
-                         city="", state="", zip_code="", card_name="",
-                         card_num="", card_exp="", card_cvv="",
-                         **kwargs):
+                         city="", state="", zip_code="", county="", country="", 
+                         card_name="", card_num="", card_exp="", card_cvv="",
+                         card_four="", **kwargs):
         kwargs.setdefault('is_staff', True)
         kwargs.setdefault('is_superuser', True)
         kwargs.setdefault('is_active', True)
         kwargs.setdefault('is_suspended', False)
 
-        return self.create_user(first_name=first_name, last_name=last_name, email=email, password=password, 
-                                receive_promotions=receive_promotions, phone=phone, street=street,
-                                city=city, state=state, zip_code=zip_code, card_name=card_name,
-                                card_num=card_num, card_exp=card_exp, card_cvv=card_cvv,
+        return self.create_user(first_name=first_name,
+                                last_name=last_name,
+                                email=email,
+                                password=password, 
+                                receive_promotions=receive_promotions, 
+                                phone=phone,
+                                street=street,
+                                city=city,
+                                state=state,
+                                zip_code=zip_code,
+                                county=county,
+                                country=country,
+                                card_name=card_name,
+                                card_num=card_num,
+                                card_exp=card_exp,
+                                card_cvv=card_cvv,
+                                card_four=card_four,
                                 **kwargs)
 
 
@@ -81,6 +97,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     card_num = encrypt(models.CharField(max_length=16, null=True, blank=True))
     card_exp = encrypt(models.CharField(max_length=5, null=True, blank=True))
     card_cvv = encrypt(models.CharField(max_length=3, null=True, blank=True))
+    card_four = models.CharField(max_length=4, default="", blank=True)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
