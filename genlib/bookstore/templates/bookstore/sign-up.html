@@ -72,7 +72,7 @@
             <input type="checkbox" value="terms" name="checks[]" id="checkBox"> I agree to all the <span class="privacy">Term, Privacy Policy</span> and <span class="privacy">Conditions</span>
           </label>
         </div>
-
+        
         <button class="w-100 btn signup-button" name="submit" value="Submit" onClick="validation();" type="submit">Sign up</button>
 
       </div>
@@ -81,15 +81,18 @@
       <div class="create-account">
         <p> Already have an account? <a class="btn signin-button" href="login.html">Sign in</a></p>
       </div>
-
+      <input type="hidden" name="something" value="working">
       <p class="mt-5 mb-3 text-muted">&copy; 2010-2021</p>
     </form>
   </main>
-  <script src="..\..\static\js\signup.js"></script>
 
-  {% if email_flag %}
+  <script src="../../static/js/signup.js"></script>
+
+  {% if email_flag == True %}
     <script>alert("Email already in use")</script>
   {% endif %}
+
+  
 </body>
 
 </html>
