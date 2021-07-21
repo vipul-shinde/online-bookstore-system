@@ -4,7 +4,7 @@ function validation() {
   var name = document.signupForm.userFirst_name;
   var name2 = document.signupForm.userLast_name;
   var email = document.signupForm.userEmail;
-  var number = document.signupForm.userName;
+  var number = document.signupForm.userPhone;
   var checkBox = document.getElementById("checkBox");
   if (checkAll(name, name2, email, pass1, pass2, number)) {
     if (passValidation(pass1, pass2, 8, 16)) {
@@ -26,14 +26,14 @@ function checkAll(name, name2, email, pass1, pass2, number) {
   if (pass1_len == 0) {
     pass1.classList.add("border-danger");
   }
-  if (name2.value.length == 0) {
-    name2.classList.add("border-danger");
-  }
   if (pass2_len == 0) {
     pass2.classList.add("border-danger");
   }
   if (name.value.length == 0) {
     name.classList.add("border-danger");
+  }
+  if (name2.value.length == 0) {
+    name2.classList.add("border-danger");
   }
   if (number.value.length == 0) {
     number.classList.add("border-danger");
@@ -41,10 +41,10 @@ function checkAll(name, name2, email, pass1, pass2, number) {
   if (email.value.length == 0) {
     email.classList.add("border-danger");
   }
-  if (email.value.length == 0 || name.value.length == 0 || pass2_len == 0 || pass1_len == 0) {
+  if (email.value.length == 0 || name.value.length == 0 || name2.value.length == 0 || number.value.length == 0 || pass2_len == 0 || pass1_len == 0) {
     alert("Fill out all fields");
   }
-  if (email.value.length != 0 || name.value.length != 0 || pass2_len != 0 || pass1_len != 0) {
+  if (email.value.length != 0 || name.value.length != 0 || name2.value.length != 0 || number.value.length != 0 || pass2_len != 0 || pass1_len != 0) {
     return true;
   }
 }
