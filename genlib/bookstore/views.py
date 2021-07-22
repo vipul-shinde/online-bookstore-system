@@ -28,15 +28,31 @@ def index(request):
     }
 
     if request.method == "POST":
-        if request.POST.get("search_button", "None") == "search_button":
+        print(request.POST)
+        if request.POST.get("espionage_cat"):
+            print("enters")
+            return search_function(request, "espionage", True)
+        if request.POST.get("contemporary_cat"):
+            return search_function(request, "contemporary", True)
+        if request.POST.get("classics_cat"):
+            return search_function(request, "classics", True)
+        if request.POST.get("literary_cat"):
+            return search_function(request, "literary", True)
+        if request.POST.get("horror_cat"):
+            return search_function(request, "horror", True)
+        if request.POST.get("all_cat"):
+            return search_function(request, "all", True)
+        
+        if request.POST.get("search_button"):
             return search_function(request, request.POST["search"])
 
-        err = add_to_cart(request, request.POST['add_to_cart'], 1)
-        if err == "redirect":
-            return redirect('login')
-        elif err == "out_of_stock":
-            context['out_of_stock_flag'] = True
-            return render(request, 'bookstore/index.html', context)
+        if request.POST.get("add_to_cart"):
+            err = add_to_cart(request, request.POST['add_to_cart'], 1)
+            if err == "redirect":
+                return redirect('login')
+            elif err == "out_of_stock":
+                context['out_of_stock_flag'] = True
+                return render(request, 'bookstore/index.html', context)
 
         context['cartCount'] = getCartCount(request)
         return render(request, 'bookstore/index.html', context)
@@ -446,9 +462,9 @@ def add_to_cart(request, isbn, quantity):
         return "redirect"
 
 
-def search_function(request, s):
+def search_function(request, s, advanced=False):
     context = {
-
+        'cartCount': getCartCount(request),
     }
     return render(request, 'bookstore/search.html', context)
 
