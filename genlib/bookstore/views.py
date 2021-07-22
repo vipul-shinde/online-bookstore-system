@@ -461,6 +461,9 @@ def browse_books(request):
 def cart(request):
     def get_context():
         books = CartItem.objects.filter(user=request.user)
+        # for book in books:
+        #     book.book.cost = int(book.quantity)*float(book.book.cost)
+        #     book.book.cost = f"{book.book.cost:.2f}"
         total_cost = 0
         for book in books:
             total_cost += int(book.quantity)*float(book.book.cost)
