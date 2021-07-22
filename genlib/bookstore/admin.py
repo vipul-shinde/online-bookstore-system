@@ -39,7 +39,45 @@ class CartAdmin(admin.ModelAdmin):
         return False
 
 
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ("id", "cart", "book", "quantity")
+
+
+class PromotionAdmin(admin.ModelAdmin):
+    list_display = ("code", "percentage", "start_date", "end_date")
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "date", "time", "total")
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ("id", "order", "book", "quantity")
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
 # Register your models here.
 admin.site.register(Book, BookAdmin)
 admin.site.register(User, UserAdminConfig)
 admin.site.register(Cart, CartAdmin)
+admin.site.register(CartItem, CartItemAdmin)
+admin.site.register(Promotion, PromotionAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem, OrderItemAdmin)
