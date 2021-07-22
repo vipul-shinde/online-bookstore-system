@@ -34,6 +34,10 @@ def index(request):
         err = add_to_cart(request, request.POST['add_to_cart'], 1)
         if err == "redirect":
             return redirect('login')
+        elif err == "out_of_stock":
+            context['out_of_stock_flag'] = True
+            return render(request, 'bookstore/index.html', context)
+
         context['cartCount'] = getCartCount(request)
         return render(request, 'bookstore/index.html', context)
     else:
@@ -425,10 +429,17 @@ def add_to_cart(request, isbn, quantity):
     if request.user.is_authenticated:
         user = request.user
         book = Book.objects.filter(isbn=isbn)[0]
-        if CartItem.objects.filter(user=user, book=book):
+        if book.stock - quantity < 0:
+                return "out_of_stock"
+
+        if CartItem.objects.filter(user=user, book=book):            
             new_quantity = CartItem.objects.get(user=user, book=book).quantity + quantity
+            book.stock -= quantity
+            book.save()
             CartItem.objects.filter(user=user, book=book).update(quantity=new_quantity)
         else:
+            book.stock -= quantity
+            book.save()
             cart_item = CartItem.objects.add_cart_item(user, book, quantity)
         return "success"
     else:
@@ -467,15 +478,27 @@ def cart(request):
             return search_function(request, request.POST["search"])
 
         if request.POST.get("cross_button"):
-            CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("cross_button"))).delete()
+            cart_item = CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("cross_button")))[0]
+            book = Book.objects.get(isbn=request.POST.get("cross_button"))
+            
+            book.stock += cart_item.quantity
+            book.save()
+            cart_item.delete()
             context = get_context()
             return render(request, 'bookstore/cart.html', context)
 
         if request.POST.get("minus_button"):
             cart_item = CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("minus_button")))[0]
             if cart_item.quantity == 0:
-                render(request, 'bookstore/cart.html', context)
+                return render(request, 'bookstore/cart.html', context)
             else:
+                book = Book.objects.get(isbn=request.POST.get("minus_button"))
+                # if book.stock == 0:
+                #     context["minus_flag"] = True
+                #     return render(request, 'bookstore/cart.html', context)
+
+                book.stock += 1
+                book.save()
                 cart_item.quantity -= 1
                 if cart_item.quantity == 0:
                     cart_item.delete()
@@ -485,13 +508,18 @@ def cart(request):
             context = get_context()
 
         if request.POST.get("plus_button"):
+            book = Book.objects.get(isbn=request.POST.get("plus_button"))
             cart_item = CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("plus_button")))[0]
-            if cart_item.quantity == cart_item.book.stock:
-                context['overflow_flag'] = True
-                render(request, 'bookstore/cart.html', context)
-            else:
-                cart_item.quantity += 1
-                cart_item.save()
+
+            if book.stock == 0:
+                context["minus_flag"] = True
+                print("Enters")
+                return render(request, 'bookstore/cart.html', context)
+
+            book.stock -= 1
+            book.save()
+            cart_item.quantity += 1
+            cart_item.save()
 
             context = get_context()
 
