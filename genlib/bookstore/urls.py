@@ -21,6 +21,8 @@ urlpatterns = [
     path('admin-home.html', views.admin_home, name='admin_home'),
     path('orderHistory.html', views.order_history, name='order_history'),
 
+    path('add_to_cart', views.add_to_cart, name='add_to_cart'),
+
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name='bookstore/password-reset/password_reset.html',

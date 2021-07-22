@@ -21,15 +21,22 @@ from .tokens import account_activation_token
 
 # Create your views here.
 def index(request):
+    context = {
+        'best_sellers': Book.objects.filter(rating=5).order_by('?'),
+        'new_arrivals': Book.objects.all(),
+        'cartCount': getCartCount(request),
+    }
+
     if request.method == "POST":
-        return search_function(request, request.POST['search'])
-        # return render(request, 'bookstore/search.html', context)
+        if request.POST.get("search_button", "None") == "search_button":
+            return search_function(request, request.POST['search'])
+
+        err = add_to_cart(request, request.POST['add_to_cart'])
+        if err == "redirect":
+            return redirect('login')
+        context['cartCount'] = getCartCount(request)
+        return render(request, 'bookstore/index.html', context)
     else:
-        context = {
-            'best_sellers': Book.objects.filter(rating=5).order_by('?'),
-            'new_arrivals': Book.objects.all(),
-            'cartCount': getCartCount(request),
-        }
         return render(request, 'bookstore/index.html', context)
 
 
@@ -103,8 +110,6 @@ def signup(request):
                     card_four1=card_four)
         user.set_password(password)
         user.save()
-
-        cart = Cart.objects.create_cart(user)
 
         current_site = get_current_site(request)
         mail_subject = "Activate your genlib account"
@@ -205,7 +210,7 @@ def password_reset_complete(request):
 
 def getCartCount(request):
     if request.user.is_authenticated:
-        cartCount = CartItem.objects.filter(cart=Cart.objects.get(user=request.user.email)).aggregate(Sum('quantity'))['quantity__sum']
+        cartCount = CartItem.objects.filter(user=request.user.email).aggregate(Sum('quantity'))['quantity__sum']
         if cartCount is None:
             return 0
         else:
@@ -415,9 +420,13 @@ def edit_profile(request):
         return render(request, 'bookstore/editprofile.html', context)
 
 
-@login_required
-def add_to_cart(request)
+# @login_required
+def add_to_cart(request, isbn):
+    if request.user.is_authenticated:
 
+        return "success"
+    else:
+        return "redirect"
 
 
 def search_function(request, s):

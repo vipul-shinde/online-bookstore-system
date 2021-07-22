@@ -32,15 +32,8 @@ class BookAdmin(admin.ModelAdmin):
                     "author", "stock", "cost", "rating")
 
 
-class CartAdmin(admin.ModelAdmin):
-    list_display = ("id", "user")
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-
 class CartItemAdmin(admin.ModelAdmin):
-    list_display = ("id", "cart", "book", "quantity")
+    list_display = ("id", "user", "book", "quantity")
 
 
 class PromotionAdmin(admin.ModelAdmin):
@@ -76,7 +69,6 @@ class OrderItemAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Book, BookAdmin)
 admin.site.register(User, UserAdminConfig)
-admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem, CartItemAdmin)
 admin.site.register(Promotion, PromotionAdmin)
 admin.site.register(Order, OrderAdmin)

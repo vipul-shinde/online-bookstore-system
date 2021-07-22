@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 rating = np.random.choice(5, size=90) + 1
-df = pd.read_csv('database.csv')
+df = pd.read_csv('~/Desktop/Temp/database/database.csv')
 df['rating'] = rating
 
 for i,r in df.iterrows():
