@@ -18,7 +18,7 @@
 
 </head>
 
-<body>
+<body> {{ cartCount }}
   <section id="title">
 
     <div class="container-fluid">
@@ -230,14 +230,17 @@
                 </div>
               </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center"><span><strong>Card in system</strong></span></div>
+            <div class="d-flex justify-content-between align-items-center"><span><strong><label for="paymentCards">Cards in system</label></strong></span></div>
             <div class="col-md-12">
-              {% if user.card_four == "" %}
-              No card in system
-              {% else %}
-              {{user.card_four}}
-              {% endif %}
-
+                <select id="paymentCards" name="cards">
+                    {% if user.card_count == 0 %}
+                        <option> No card </option>
+                    {% else %}
+                        {% for card in payment_cards %}
+                            <option>{{ card }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
 
               <input type="hidden" name="something" value="working">
               <div class="form-check">
@@ -259,6 +262,11 @@
   {% if delete_flag %}
   <script>
     alert("You do not have any card stored. Select 'Save' instead.")
+  </script>
+  {% endif %}
+  {% if three_cards %}
+  <script>
+    alert("You are only allowed to save three cards.")
   </script>
   {% endif %}
   <!-- Bootsrap Scripts -->

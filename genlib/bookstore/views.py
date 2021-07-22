@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage, send_mail
+from django.db.models import Sum
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -14,21 +15,20 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.http import HttpResponseRedirect, HttpResponse
 
 from copy import deepcopy
+import datetime
 from .models import *
 from .tokens import account_activation_token
 
 # Create your views here.
 def index(request):
     if request.method == "POST":
-        context = {
-            'search': request.POST['search']
-        }
-        return render(request, 'bookstore/search.html', context)
+        return search_function(request, request.POST['search'])
+        # return render(request, 'bookstore/search.html', context)
     else:
         context = {
             'best_sellers': Book.objects.filter(rating=5).order_by('?'),
             'new_arrivals': Book.objects.all(),
-            # 'cartCount': getCartCount(request),
+            'cartCount': getCartCount(request),
         }
         return render(request, 'bookstore/index.html', context)
 
@@ -48,15 +48,59 @@ def signup(request):
         else:
             receive_promotions = False
 
+        # if request.POST['userStreet'] != "":
+        #     street = request.POST['userStreet']
+        #     city = request.POST['userCity']
+        #     state = request.POST['userState']
+        #     zip_code = request.POST['userZip_code']
+        #     county = request.POST['userCounty']
+        #     country = request.POST['userCountry']
+        # else:
+        street = ""
+        city = ""
+        state = ""
+        zip_code = ""
+        county = ""
+        country = ""
+
+        # if request.POST['userCard_name'] != "":
+        #     card_count = 1
+        #     card_name = request.POST['userCard_name']
+        #     card_num = request.POST['userCard_num']
+        #     card_exp = f"{request.POST['userCard_month']}/{request.POST['userCard_year']}
+        #     card_cvv = request.POST['userCard_cvv']
+        #     card_four = card_num[-4:]
+        # else:
+        card_count = 0
+        card_name = ""
+        card_num = ""
+        card_exp = ""
+        card_cvv = ""
+        card_four = ""
+
+
         objects = User.objects.all()
         for o in objects:
             if o.email == email:
                 return render(request, 'bookstore/sign-up.html', {'email_flag': True})
 
-        user = User(first_name=first_name, last_name=last_name, email=email,
-                    receive_promotions=receive_promotions, phone=phone,
-                    street="", city="", state="", zip_code="", county="",
-                    country="", card_four="")
+        user = User(first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    receive_promotions=receive_promotions,
+                    phone=phone,
+                    street=street,
+                    city=city,
+                    state=state,
+                    zip_code=zip_code,
+                    county=county,
+                    country=country,
+                    card_count=card_count,
+                    card_name1=card_name,
+                    card_num1=card_num,
+                    card_exp1=card_exp,
+                    card_cvv1=card_cvv,
+                    card_four1=card_four)
         user.set_password(password)
         user.save()
 
@@ -146,18 +190,6 @@ def signout(request):
     return redirect('login')
 
 
-def book_detail(request, title):
-    book = Book.objects.get(title=title)
-    context = {
-        'title': book.title,
-        'book': book,
-        #'other_books': Book.objects.filter(genre=book.genre).order_by('?'),
-        'books': Book.objects.all(),
-        # 'cartCount': getCartCount(request),
-    }
-    return render(request, 'bookstore/productDetails.html', context)
-
-
 @login_required
 def password_change_complete(request):
     mail_subject = "Genlib account password changed"
@@ -173,16 +205,45 @@ def password_reset_complete(request):
 
 def getCartCount(request):
     if request.user.is_authenticated:
-        return 10
+        cartCount = CartItem.objects.filter(cart=Cart.objects.get(user=request.user.email)).aggregate(Sum('quantity'))['quantity__sum']
+        if cartCount is None:
+            return 0
+        else:
+            cartCount
     else:
         return ""
 
 
+def book_detail(request, title):
+    book = Book.objects.get(title=title)
+    context = {
+        'title': book.title,
+        'book': book,
+        #'other_books': Book.objects.filter(genre=book.genre).order_by('?'),
+        'books': Book.objects.all(),
+        'cartCount': getCartCount(request),
+    }
+    return render(request, 'bookstore/productDetails.html', context)
+
 @login_required
 def edit_profile(request):
+    payment_cards = []
+    if request.user.card_four1 != "":
+        payment_cards.append(request.user.card_four1)
+    if request.user.card_four2 != "":
+        payment_cards.append(request.user.card_four2)
+    if request.user.card_four3 != "":
+        payment_cards.append(request.user.card_four3)
+    context = {
+        'cartCount': getCartCount(request),
+        'payment_cards': payment_cards,
+        'delete_flag': False,
+        'three_cards': False,
+    }
+
     if request.method == "POST":
         if request.POST['something'] == "not_working":
-            return render(request, 'bookstore/editprofile.html')
+            return render(request, 'bookstore/editprofile.html', context)
         changes_made = []
         orig_user = deepcopy(request.user)
         user = request.user
@@ -238,22 +299,80 @@ def edit_profile(request):
         elif user.country != orig_user.country:
             changes_made.append("country")
 
-        if request.POST.get("card_option", "Select") == "Delete":
-            if user.card_four == "":
-                return render(request, 'bookstore/editprofile.html', {'delete_flag': True})
-            changes_made.append("card_delete")
-            user.card_name = ""
-            user.card_num = ""
-            user.card_exp = ""
-            user.card_cvv = ""
-            user.card_four = ""
-        elif request.POST.get("card_option", "Select") == "Save":
-            changes_made.append("card_save")
-            user.card_name = request.POST["card_name"]
-            user.card_num = request.POST["card_num"]
-            user.card_exp = f'{request.POST["card_month"]}/{request.POST["card_year"]}'
-            user.card_cvv = request.POST["card_cvv"]
-            user.card_four = request.POST["card_num"][-4:]
+        if request.POST.get("card_option", "Select") != "Select":
+            if request.POST.get("card_option") == "Delete":
+                if user.card_count == 0:
+                    context['delete_flag'] = True
+                    return render(request, 'bookstore/editprofile.html', context)
+
+                user.card_count -= 1
+                if user.card_four1 == request.POST["cards"]:
+                    changes_made.append("card_delete_1")
+                    user.card_name1 = ""
+                    user.card_num1 = ""
+                    user.card_exp1 = ""
+                    user.card_cvv1 = ""
+                    user.card_four1 = ""
+                elif user.card_four2 == request.POST["cards"]:
+                    changes_made.append("card_delete_2")
+                    user.card_name2 = ""
+                    user.card_num2 = ""
+                    user.card_exp2 = ""
+                    user.card_cvv2 = ""
+                    user.card_four2 = ""
+                elif user.card_four3 == request.POST["cards"]:
+                    changes_made.append("card_delete_3")
+                    user.card_name3 = ""
+                    user.card_num3 = ""
+                    user.card_exp3 = ""
+                    user.card_cvv3 = ""
+                    user.card_four3 = ""
+
+                payment_cards = []
+                if user.card_four1 != "":
+                    payment_cards.append(user.card_four1)
+                if user.card_four2 != "":
+                    payment_cards.append(user.card_four2)
+                if user.card_four3 != "":
+                    payment_cards.append(user.card_four3)
+                context['payment_cards'] = payment_cards
+
+            else:
+                if user.card_count == 3:
+                    context['three_cards'] = True
+                    return render(request, 'bookstore/editprofile.html', context)
+                
+                user.card_count += 1
+                if user.card_four1 == "":
+                    changes_made.append("card_save_1")
+                    user.card_name1 = request.POST["card_name"]
+                    user.card_num1 = request.POST["card_num"]
+                    user.card_exp1 = f'{request.POST.get("card_month")}/{request.POST.get("card_year")}'
+                    user.card_cvv1 = request.POST["card_cvv"]
+                    user.card_four1 = request.POST["card_num"][-4:]
+                elif user.card_four2 == "":
+                    changes_made.append("card_save_2")
+                    user.card_name2 = request.POST["card_name"]
+                    user.card_num2 = request.POST["card_num"]
+                    user.card_exp2 = f'{request.POST.get("card_month")}/{request.POST.get("card_year")}'
+                    user.card_cvv2 = request.POST["card_cvv"]
+                    user.card_four2 = request.POST["card_num"][-4:]
+                elif user.card_four3 == "":
+                    changes_made.append("card_save_3")
+                    user.card_name3 = request.POST["card_name"]
+                    user.card_num3 = request.POST["card_num"]
+                    user.card_exp3 = f'{request.POST.get("card_month")}/{request.POST.get("card_year")}'
+                    user.card_cvv3 = request.POST["card_cvv"]
+                    user.card_four3 = request.POST["card_num"][-4:]
+
+                payment_cards = []
+                if user.card_four1 != "":
+                    payment_cards.append(user.card_four1)
+                if user.card_four2 != "":
+                    payment_cards.append(user.card_four2)
+                if user.card_four3 != "":
+                    payment_cards.append(user.card_four3)
+                context['payment_cards'] = payment_cards
 
         user.save()
 
@@ -271,10 +390,18 @@ def edit_profile(request):
             for x in ["street", "city", "state", "zip_code", "county", "country"]:
                 if x in changes_made:
                     message += f"* Your {x} has been updated\n"
-        if "card_delete" in changes_made:
-            message += f"* Your card ending in {orig_user.card_four} has been removed\n"
-        if "card_save" in changes_made:
-            message += f"* Card ending in {user.card_four} has been added to your account\n"
+        if "card_delete_1" in changes_made:
+            message += f"* Your card ending in {orig_user.card_four1} has been removed\n"
+        if "card_delete_2" in changes_made:
+            message += f"* Your card ending in {orig_user.card_four2} has been removed\n"
+        if "card_delete_3" in changes_made:
+            message += f"* Your card ending in {orig_user.card_four3} has been removed\n"
+        if "card_save_1" in changes_made:
+            message += f"* Card ending in {user.card_four1} has been added to your account\n"
+        if "card_save_2" in changes_made:
+            message += f"* Card ending in {user.card_four2} has been added to your account\n"
+        if "card_save_3" in changes_made:
+            message += f"* Card ending in {user.card_four3} has been added to your account\n"
 
         mail_subject = "Changes made to your genlib account"
         mail_message = message
@@ -283,10 +410,21 @@ def edit_profile(request):
             EMAIL = EmailMessage(mail_subject, mail_message, to=[user.email])
             EMAIL.send()
 
-        return render(request, 'bookstore/editprofile.html')
+        return render(request, 'bookstore/editprofile.html', context)
     else:
-        return render(request, 'bookstore/editprofile.html')
+        return render(request, 'bookstore/editprofile.html', context)
 
+
+@login_required
+def add_to_cart(request)
+
+
+
+def search_function(request, s):
+    context = {
+
+    }
+    return render(request, 'bookstore/search.html', context)
 
 def search(request):
     return render(request, 'bookstore/search.html')
