@@ -94,11 +94,11 @@
         </div>
         <div class="col-lg-2 cart-container">
           <h5 class="cart-element">Book #{{ forloop.counter }}</h5>
-          <p class="cart-element">Book Description</p>
+          <p class="cart-element">{{ book.book.description|truncatewords:10 }}</p>
         </div>
         <div class="col-lg-2 cart-container">
           <div class="number-input cart-element">
-              <form method="POST">
+              <form method="POST" style=" display:inline!important;">
                   {% csrf_token %}
             <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus" name="minus_button" type="submit" value={{ book.book.isbn }}></button>
               <input class="quantity" min="0" name="quantity" value="{{ book.quantity }}" type="number">
@@ -130,12 +130,6 @@
         <div class="col-lg-2 cart-container">
           <p><span><strong>Subtotal</strong></span> : ${{ total_cost }}</p>
         </div>
-        <!-- <div class="col-lg-2 cart-container">
-            <form method="POST">
-                {% csrf_token %}
-                <button class="btn btn-sm search-button" type="submit" name="change_button" value="">Save Changes</button>
-            </form>
-        </div> -->
         <div class="col-lg-2 cart-container">
           <a href="/shipping.html" class="btn btn-sm explore-button" type="submit">Continue to Checkout</a>
         </div>

@@ -80,22 +80,6 @@
           </ul>
         </div>
       </nav>
-
-      <!-- Title
-
-      <div class="row">
-        <div class="col-lg-6">
-          <h2 class="big-heading">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac nibh porta, elementum arcu efficitur, luctus purus.</h2>
-          <button type="button" class="btn btn-lg explore-button">Explore</button>
-        </div>
-        <div class="col-lg-6">
-          <img class="book-image" src="images/living-room.png" alt="">
-        </div>
-      </div> -->
-
-
-
-
     </div>
   </section>
   <div class="container rounded bg-white mt-5 mb-5">
@@ -230,8 +214,10 @@
                 </div>
               </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center"><span><strong><label for="paymentCards">Cards in system</label></strong></span></div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center"><span><strong><label for="paymentCards">Cards in system: </label></strong></span></div>
             <div class="col-md-12">
+              <label for="paymentCard">Select Card: </label>
                 <select id="paymentCards" name="cards">
                     {% if user.card_count == 0 %}
                         <option> No card </option>
@@ -241,11 +227,14 @@
                         {% endfor %}
                     {% endif %}
                 </select>
+              <div class="">
+
+              </div>
 
               <input type="hidden" name="something" value="working">
               <div class="form-check">
-                <div class="form-group col-sm-12" style="margin-top:0em;" for="flexCheckDefault">
-                  <label for="paymentCard">Card </label>
+                <div class="form-group col-sm-12" for="flexCheckDefault">
+                  <label for="paymentCard">Action: </label>
                   <select id="paymentCard" name="card_option">
                     <option selected disabled hidden>Select</option>
                     <option>Delete</option>

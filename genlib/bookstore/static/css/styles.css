@@ -118,6 +118,11 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #F07B3F;
   background-color: #F07B3F;
   margin-right: 15px;
+  display: inline-block;
+}
+
+form {
+  display:inline!important;
 }
 
 .navi-btn {

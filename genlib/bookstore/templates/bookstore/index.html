@@ -208,11 +208,11 @@
                     <p><strong>Price: ${{ book.cost }}</strong></p>
                   </div>
                   <div class="card-footer">
-                    <form method="POST">
+                    <form method="POST" style=" display:inline!important;">
                         {% csrf_token %}
-                        <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
+                        <button class="add-cart-btn btn" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
                     </form>
-                    <a href="{% url 'book-details' book.title %}" class="details-btn btn btn-block">Details</a>
+                    <a href="{% url 'book-details' book.title %}" class="details-btn btn">Details</a>
                   </div>
                 </div>
               </div>
@@ -235,7 +235,7 @@
                     <p><strong>Price: ${{ book.cost }}</strong></p>
                   </div>
                   <div class="card-footer">
-                    <form method="POST">
+                    <form method="POST" style=" display:inline!important;">
                         {% csrf_token %}
                         <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
                     </form>
@@ -270,7 +270,7 @@
               <p><strong>Price: ${{ book.cost }}</strong></p>
             </div>
             <div class="card-footer">
-                <form method="POST">
+                <form method="POST" style=" display:inline!important;">
                     {% csrf_token %}
                     <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
                 </form>
