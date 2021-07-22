@@ -31,8 +31,9 @@
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <form class="d-flex" method="POST">
-                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search">
-                <button class="btn search-button" type="submit">Search</button>
+                  {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
+                <button class="btn search-button" type="submit" name="search_button" value="search_button">Search</button>
               </form>
             </li>
             <li class="nav-item">
@@ -42,8 +43,9 @@
               <a class="nav-link" href="/search.html">Advanced Search</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+              <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i> <span class="fa-layers-text fa-inverse cart-value">{{ cartCount }}</span></a>
             </li>
+
             {% if not request.user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="login.html">Sign in</a>
@@ -53,7 +55,7 @@
             {% else %}
             <li class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-user"></i><b>&nbsp;Profile</b>
+                <b>&nbsp; {{ user.first_name}}</b>  <i class="fa fa-user"></i>
               </a>
               {% if user.is_staff %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
@@ -68,7 +70,7 @@
               {% else %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                 <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
+                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
@@ -218,15 +220,15 @@
             <div class="d-flex justify-content-between align-items-center"><span><strong><label for="paymentCards">Cards in system: </label></strong></span></div>
             <div class="col-md-12">
               <label for="paymentCard">Select Card: </label>
-                <select id="paymentCards" name="cards">
-                    {% if user.card_count == 0 %}
-                        <option> No card </option>
-                    {% else %}
-                        {% for card in payment_cards %}
-                            <option>{{ card }}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
+              <select id="paymentCards" name="cards">
+                {% if user.card_count == 0 %}
+                <option> No card </option>
+                {% else %}
+                {% for card in payment_cards %}
+                <option>{{ card }}</option>
+                {% endfor %}
+                {% endif %}
+              </select>
               <div class="">
 
               </div>
