@@ -87,7 +87,7 @@
       <h3 class="none"><span class="current-page"><em>Shopping Cart</em></span> > Shipping Details > Payment Details </h3>
       <hr>
       <h1 class="big-heading">Shopping Cart</h1>
-      {% for book in books_in_cart %}
+      {% for book, price in books_in_cart %}
       <div class="row cart-row">
         <div class="col-lg-2 cart-container">
           <img src="../../static/{{ book.book.image_path }}" class="card-img-top" alt="...">
@@ -107,7 +107,7 @@
           </div>
         </div>
         <div class="col-lg-2 cart-container">
-          <p class="cart-element">${{ book.book.cost }}</p>
+          <p class="cart-element">${{ price }}</p>
         </div>
         <div class="col-lg-2 cart-container">
           <form method="POST">
