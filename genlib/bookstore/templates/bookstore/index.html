@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" crossorigin="anonymous" />
 </head>
 
-<body> {{ cartCount }}
+<body>
   <section id="title">
 
     <div class="container-fluid">
@@ -44,7 +44,7 @@
               <a class="nav-link" href="/search.html">Advanced Search</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+              <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i> <span class="fa-layers-text fa-inverse cart-value">{{ cartCount }}</span></a>
             </li>
 
             {% if not request.user.is_authenticated %}
@@ -56,7 +56,7 @@
             {% else %}
             <li class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-user"></i><b>&nbsp;Profile</b>
+                <b>&nbsp; {{ user.first_name}}</b>  <i class="fa fa-user"></i>
               </a>
               {% if user.is_staff %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
