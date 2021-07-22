@@ -28,7 +28,6 @@ def index(request):
     }
 
     if request.method == "POST":
-        print(request.POST)
         if request.POST.get("espionage_cat"):
             print("enters")
             return search_function(request, "espionage", True)
@@ -75,35 +74,35 @@ def signup(request):
         else:
             receive_promotions = False
 
-        # if request.POST['userStreet'] != "":
-        #     street = request.POST['userStreet']
-        #     city = request.POST['userCity']
-        #     state = request.POST['userState']
-        #     zip_code = request.POST['userZip_code']
-        #     county = request.POST['userCounty']
-        #     country = request.POST['userCountry']
-        # else:
-        street = ""
-        city = ""
-        state = ""
-        zip_code = ""
-        county = ""
-        country = ""
+        if request.POST['userStreet'] != "":
+            street = request.POST['userStreet']
+            city = request.POST['userCity']
+            state = request.POST['userState']
+            zip_code = request.POST['userZip_code']
+            county = request.POST['userCounty']
+            country = request.POST['userCountry']
+        else:
+            street = ""
+            city = ""
+            state = ""
+            zip_code = ""
+            county = ""
+            country = ""
 
-        # if request.POST['userCard_name'] != "":
-        #     card_count = 1
-        #     card_name = request.POST['userCard_name']
-        #     card_num = request.POST['userCard_num']
-        #     card_exp = f"{request.POST['userCard_month']}/{request.POST['userCard_year']}
-        #     card_cvv = request.POST['userCard_cvv']
-        #     card_four = card_num[-4:]
-        # else:
-        card_count = 0
-        card_name = ""
-        card_num = ""
-        card_exp = ""
-        card_cvv = ""
-        card_four = ""
+        if request.POST['userCard_name'] != "":
+            card_count = 1
+            card_name = request.POST['userCard_name']
+            card_num = request.POST['userCard_num']
+            card_exp = f"{request.POST.get('userCard_month')}/{request.POST.get('userCard_year')}"
+            card_cvv = request.POST['userCard_cvv']
+            card_four = card_num[-4:]
+        else:
+            card_count = 0
+            card_name = ""
+            card_num = ""
+            card_exp = ""
+            card_cvv = ""
+            card_four = ""
 
 
         objects = User.objects.all()
