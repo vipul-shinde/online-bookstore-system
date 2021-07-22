@@ -29,9 +29,9 @@ def index(request):
 
     if request.method == "POST":
         if request.POST.get("search_button", "None") == "search_button":
-            return search_function(request, request.POST['search'])
+            return search_function(request, request.POST["search"])
 
-        err = add_to_cart(request, request.POST['add_to_cart'])
+        err = add_to_cart(request, request.POST['add_to_cart'], 1)
         if err == "redirect":
             return redirect('login')
         context['cartCount'] = getCartCount(request)
@@ -210,11 +210,11 @@ def password_reset_complete(request):
 
 def getCartCount(request):
     if request.user.is_authenticated:
-        cartCount = CartItem.objects.filter(user=request.user.email).aggregate(Sum('quantity'))['quantity__sum']
-        if cartCount is None:
-            return 0
-        else:
-            cartCount
+        count = 0
+        cart_items = CartItem.objects.filter(user=request.user)
+        for cart_item in cart_items:
+            count += cart_item.quantity
+        return count
     else:
         return ""
 
@@ -421,9 +421,15 @@ def edit_profile(request):
 
 
 # @login_required
-def add_to_cart(request, isbn):
+def add_to_cart(request, isbn, quantity):
     if request.user.is_authenticated:
-
+        user = request.user
+        book = Book.objects.filter(isbn=isbn)[0]
+        if CartItem.objects.filter(user=user, book=book):
+            new_quantity = CartItem.objects.get(user=user, book=book).quantity + quantity
+            CartItem.objects.filter(user=user, book=book).update(quantity=new_quantity)
+        else:
+            cart_item = CartItem.objects.add_cart_item(user, book, quantity)
         return "success"
     else:
         return "redirect"
@@ -442,10 +448,63 @@ def browse_books(request):
     return render(request, 'bookstore/browse-books.html')
 
 def cart(request):
-    return render(request, 'bookstore/cart.html')
+    def get_context():
+        books = CartItem.objects.filter(user=request.user)
+        total_cost = 0
+        for book in books:
+            total_cost += int(book.quantity)*float(book.book.cost)
+        total_cost = f"{total_cost:.2f}"
+        context = {
+            'cartCount': getCartCount(request),
+            'books_in_cart': CartItem.objects.filter(user=request.user),
+            'total_cost': total_cost,
+        }
+        return context
+    context = get_context()
+
+    if request.method == "POST":
+        if request.POST.get("search_button", "None") == "search_button":
+            return search_function(request, request.POST["search"])
+
+        if request.POST.get("cross_button"):
+            CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("cross_button"))).delete()
+            context = get_context()
+            return render(request, 'bookstore/cart.html', context)
+
+        if request.POST.get("minus_button"):
+            cart_item = CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("minus_button")))[0]
+            if cart_item.quantity == 0:
+                render(request, 'bookstore/cart.html', context)
+            else:
+                cart_item.quantity -= 1
+                if cart_item.quantity == 0:
+                    cart_item.delete()
+                else:
+                    cart_item.save()
+
+            context = get_context()
+
+        if request.POST.get("plus_button"):
+            cart_item = CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("plus_button")))[0]
+            if cart_item.quantity == cart_item.book.stock:
+                context['overflow_flag'] = True
+                render(request, 'bookstore/cart.html', context)
+            else:
+                cart_item.quantity += 1
+                cart_item.save()
+
+            context = get_context()
+
+        return render(request, 'bookstore/cart.html', context)
+    else:
+        return render(request, 'bookstore/cart.html', context)
+
 
 def admin_home(request):
     return render(request, 'bookstore/admin-home.html')
 
 def order_history(request):
     return render(request, 'bookstore/orderHistory.html')
+
+def shipping(request):
+    return render(request, 'bookstore/shipping.html')

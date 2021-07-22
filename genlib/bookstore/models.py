@@ -190,22 +190,6 @@ def email_promotion(sender, instance, **kwargs):
     send_mass_mail(messages)
 
 
-# class CartManager(models.Manager):
-#     def create_cart(self, user):
-#         cart = self.create(user=user)
-#         return cart
-
-
-# class Cart(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-#     objects = CartManager()
-
-#     def __str__(self):
-#         return str(self.id)
-
-
 class CartItemManager(models.Manager):
     def add_cart_item(self, user, book, quantity):
         cart_item = self.create(user=user, book=book, quantity=quantity)
