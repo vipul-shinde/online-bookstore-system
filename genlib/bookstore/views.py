@@ -14,6 +14,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from django.http import HttpResponseRedirect, HttpResponse
 
+from decimal import Decimal
 from copy import deepcopy
 import datetime
 from .models import *
@@ -42,6 +43,9 @@ def index(request):
             return search_function(request, "all", True)
         
         if request.POST.get("search_button"):
+            # request.search_query = request.POST['search']
+            # request.redirect = True
+            # return render(request, 'bookstore/search.html')
             return search_function(request, request.POST["search"])
 
         if request.POST.get("add_to_cart"):
@@ -584,36 +588,45 @@ def cart(request):
         return render(request, 'bookstore/cart.html', context)
 
 
-def search_function(request, s, advanced=False):
+def search_function(request, s="", advanced=False):
     def get_context():
         context = {
             'cartCount': getCartCount(request),
             'books': Book.objects.all(),
+            'testing': "search_function",
         }
         return context
     context = get_context()
 
     if request.method == "POST":
-        # if request.POST.get("search_button"):
+        request.redirect = "True"
+        return redirect('search')
+        # if request.POST.get("search_button1"):
         #     return search_function(request, request.POST["search"])
 
-        if request.POST.get("add_to_cart"):
-            err = add_to_cart(request, request.POST['add_to_cart'], 1)
-            if err == "redirect":
-                return redirect('login')
-            elif err == "out_of_stock":
-                context['out_of_stock_flag'] = True
-                return render(request, 'bookstore/search.html', context)
-        context = get_context()
+        # if request.POST.get("add_to_cart"):
+        #     err = add_to_cart(request, request.POST['add_to_cart'], 1)
+        #     if err == "redirect":
+        #         return redirect('login')
+        #     elif err == "out_of_stock":
+        #         context['out_of_stock_flag'] = True
+        #         return render(request, 'bookstore/search.html', context)
+        # context = get_context()
+        # return render(request, 'bookstore/search.html', context)
+
+
+def search(request):
+    if request.redirect:
+        pass
+    context = {
+        'cartCount': getCartCount(request),
+        'books': Book.objects.all(),
+        'testing': request.search_query,
+    }
+    if request.method == "POST":
         return render(request, 'bookstore/search.html', context)
     else:
         return render(request, 'bookstore/search.html', context)
-
-def search(request):
-    context = {
-        'cartCount': getCartCount(request),
-    }
-    return render(request, 'bookstore/search.html', context)
 
 def admin_home(request):
     return render(request, 'bookstore/admin-home.html')
@@ -640,6 +653,7 @@ def shipping(request):
         order = Order.objects.create_order(
             user=request.user,
             total=total_cost,
+            orig_total=total_cost,
             promotion=promotion,
             date=datetime.date.today(),
             time=datetime.datetime.now().strftime("%H:%M:%S"),
@@ -669,8 +683,8 @@ def shipping(request):
             price = f"{price:.2f}"
             prices.append(price)
         
-        total_cost = f"{order.total:.2f}"
-        discount = int(order.promotion.percentage)*int(order.total)
+        total_cost = order.total
+        discount = Decimal(int(order.promotion.percentage))*order.orig_total / Decimal(100)
         discount = f"{discount:.2f}"
 
         context = {
@@ -707,6 +721,7 @@ def shipping(request):
                     context['promo_flag'] = True
                     return render(request, 'bookstore/shipping.html', context)
 
+            promo = promo[0]
             if promo.start_date > datetime.date.today():
                 context['promo_start_flag'] = True
                 return render(request, 'bookstore/shipping.html', context)
@@ -714,6 +729,16 @@ def shipping(request):
                 context['promo_end_flag'] = True
                 return render(request, 'bookstore/shipping.html', context)
             
+            order = order[0]
+            if order.promotion.code != "SYSTEM":
+                order.total = order.orig_total
+            order.promotion = promo
+            order.total = order.total * Decimal(100-int(promo.percentage)) / Decimal(100)
+            order.total = round(order.total, 2)
+            order.save()
+
+            context = get_context()
+            return render(request, 'bookstore/shipping.html', context)
 
         # if can_apply_promo:
         #     try:

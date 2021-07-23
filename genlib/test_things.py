@@ -5,10 +5,15 @@ book = Book.objects.filter(title="Invisible Man")[0]
 book.stock = 2
 book.save()
 
-# promo = Promotion(code="TEST1", percentage=10, start_date=datetime.date.today(), end_date=datetime.date.today())
-# promo.save()
-# promo.code = "TEST2"
-# promo.save()
+promo = Promotion(code="TEST1", percentage=10, start_date=datetime.date.today(), end_date=datetime.date.today())
+promo.save()
+promo = Promotion(code="TEST2", percentage=12, start_date=datetime.date.today(), end_date=datetime.date.today())
+promo.save()
+promo = Promotion(code="TEST3", percentage=10, start_date=datetime.date.today()+datetime.timedelta(days=2), end_date=datetime.date.today())
+promo.save()
+promo = Promotion(code="TEST4", percentage=10, start_date=datetime.date.today()-datetime.timedelta(days=3), end_date=datetime.date.today()-datetime.timedelta(days=1))
+promo = Promotion(code="GEN42069", percentage=10, start_date=datetime.date.today()-datetime.timedelta(days=3), end_date=datetime.date.today()+datetime.timedelta(days=10))
+promo.save()
 
 for o in Order.objects.all(): o.delete()
 order = Order.objects.create_order(

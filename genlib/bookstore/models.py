@@ -207,11 +207,12 @@ class CartItem(models.Model):
 
 
 class OrderManager(models.Manager):
-    def create_order(self, user, total, promotion, date, time, first_name, last_name,
+    def create_order(self, user, total, orig_total, promotion, date, time, first_name, last_name,
                      phone, street, city, state, zip_code, county, country,
                      card_name, card_num, card_exp, card_cvv, card_four, status="Incomplete"):
         order = self.create(user=user,
                             total=total,
+                            orig_total=orig_total,
                             promotion=promotion,
                             date=date,
                             time=time,
@@ -239,6 +240,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.DecimalField(decimal_places=2, max_digits=5)
     promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True)
+    orig_total = models.DecimalField(decimal_places=2, max_digits=5, default=0)
 
     date = models.DateField()
     time = models.TimeField()

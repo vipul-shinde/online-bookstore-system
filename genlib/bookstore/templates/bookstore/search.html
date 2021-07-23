@@ -18,7 +18,7 @@
 
 </head>
 
-<body>
+<body> {{ testing }}
 
   <section id="title">
 
@@ -34,7 +34,7 @@
               <form class="d-flex" method="POST">
                 {% csrf_token %}
                 <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
-                <button class="btn search-button" type="submit" name="search_button" value="search_button">Search</button>
+                <button class="btn search-button" type="submit" name="search_button1" value="search_button1">Search</button>
               </form>
             </li>
             <li class="nav-item">
@@ -174,4 +174,10 @@
 
   <!-- Bootsrap Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  {% if out_of_stock_flag == True %}
+  <script>
+    alert("We do not have the stock to add the books to your cart.")
+  </script>
+  {% endif %}
 </body>
