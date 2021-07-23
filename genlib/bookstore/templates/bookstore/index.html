@@ -32,7 +32,7 @@
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <form class="d-flex" method="POST">
-                  {% csrf_token %}
+                {% csrf_token %}
                 <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
                 <button class="btn search-button" type="submit" name="search_button" value="search_button">Search</button>
               </form>
@@ -56,7 +56,7 @@
             {% else %}
             <li class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                <b>&nbsp; {{ user.first_name}}</b>  <i class="fa fa-user"></i>
+                <b>&nbsp; {{ user.first_name}}</b> <i class="fa fa-user"></i>
               </a>
               {% if user.is_staff %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
@@ -120,60 +120,60 @@
     <div class="container-fluid">
       <h1 class="big-heading">Categories</h1>
       <form method="POST">
-          {% csrf_token %}
-          <div class="row">
-            <div class="card col-lg-2 cat-card">
-                <button class="stretched-link text-center" type="submit" name="espionage_cat" value="espionage_cat">
-                <img class="card-img-top cat-card-img" src="..\..\static\images\png\020-fantasy.png" alt="Card image">
-                <div class="card-body">
-                    <h6 class="card-title text-center">Espionage</h6>
-                </div>
+        {% csrf_token %}
+        <div class="row">
+          <div class="card col-lg-2 cat-card">
+            <button class="stretched-link text-center cat-btn" type="submit" name="espionage_cat" value="espionage_cat">
+              <img class="card-img-top cat-card-img" src="..\..\static\images\png\020-fantasy.png" alt="Card image">
+              <div class="card-body">
+                <h6 class="card-title text-center">Espionage</h6>
+              </div>
             </button>
-            </div>
-            <div class="card col-lg-2 cat-card">
-                <button class="stretched-link text-center" type="submit" name="contemporary_cat" value="contemporary_cat">
-                <img class="card-img-top cat-card-img" src="..\..\static\images\png\031-memory.png" alt="Card image">
-                
+          </div>
+          <div class="card col-lg-2 cat-card">
+            <button class="stretched-link text-center cat-btn" type="submit" name="contemporary_cat" value="contemporary_cat">
+              <img class="card-img-top cat-card-img" src="..\..\static\images\png\031-memory.png" alt="Card image">
+
               <div class="card-body">
                 <h6 class="card-title text-center">Contemporary Women</h6>
               </div>
-              </button>
-            </div>
-            <div class="card col-lg-2 cat-card">
-                <button class="stretched-link text-center" type="submit" name="classics_cat" value="classics_cat">
-                <img class="card-img-top cat-card-img" src="..\..\static\images\png\044-technology.png" alt="Card image">
+            </button>
+          </div>
+          <div class="card col-lg-2 cat-card">
+            <button class="stretched-link text-center cat-btn" type="submit" name="classics_cat" value="classics_cat">
+              <img class="card-img-top cat-card-img" src="..\..\static\images\png\044-technology.png" alt="Card image">
               <div class="card-body">
                 <h6 class="card-title text-center">Classics</h6>
               </div>
-              </button>
-            </div>
-            <div class="card col-lg-2 cat-card">
-                <button class="stretched-link text-center" type="submit" name="espionage_cat" value="literary_cat">
-                <img class="card-img-top cat-card-img" src="..\..\static\images\png\033-mystery.png" alt="Card image">
+            </button>
+          </div>
+          <div class="card col-lg-2 cat-card">
+            <button class="stretched-link text-center cat-btn" type="submit" name="espionage_cat" value="literary_cat">
+              <img class="card-img-top cat-card-img" src="..\..\static\images\png\033-mystery.png" alt="Card image">
               <div class="card-body">
                 <h6 class="card-title text-center">Literary</h6>
               </div>
-              </button>
-            </div>
-            <div class="card col-lg-2 cat-card">
-                <button class="stretched-link text-center" type="submit" name="horror_cat" value="horror_cat">
-                <img class="card-img-top cat-card-img" src="..\..\static\images\png\024-humor.png" alt="Card image">
+            </button>
+          </div>
+          <div class="card col-lg-2 cat-card">
+            <button class="stretched-link text-center cat-btn" type="submit" name="horror_cat" value="horror_cat">
+              <img class="card-img-top cat-card-img" src="..\..\static\images\png\024-humor.png" alt="Card image">
               <div class="card-body">
                 <h6 class="card-title text-center">Horror</h6>
               </div>
-              </button>
-            </div>
-            <div class="card col-lg-2 cat-card">
-                <button class="stretched-link text-center" type="submit" name="all_cat" value="all_cat">
-                  <img class="card-img-top cat-card-img" src="..\..\static\images\png\024-humor.png" alt="Card image">
-                <div class="card-body">
-                  <h6 class="card-title text-center">All categories</h6>
-                </div>
-                </button>
+            </button>
+          </div>
+          <div class="card col-lg-2 cat-card">
+            <button class="stretched-link text-center cat-btn" type="submit" name="all_cat" value="all_cat">
+              <img class="card-img-top cat-card-img" src="..\..\static\images\png\024-humor.png" alt="Card image">
+              <div class="card-body">
+                <h6 class="card-title text-center">All categories</h6>
               </div>
+            </button>
+          </div>
       </form>
-      
-      </div>
+
+    </div>
     </div>
   </section>
 
@@ -214,8 +214,8 @@
                   </div>
                   <div class="card-footer">
                     <form method="POST" style=" display:inline!important;">
-                        {% csrf_token %}
-                        <button class="add-cart-btn btn" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
+                      {% csrf_token %}
+                      <button class="add-cart-btn btn" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
                     </form>
                     <a href="{% url 'book-details' book.title %}" class="details-btn btn">Details</a>
                   </div>
@@ -241,8 +241,8 @@
                   </div>
                   <div class="card-footer">
                     <form method="POST" style=" display:inline!important;">
-                        {% csrf_token %}
-                        <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
+                      {% csrf_token %}
+                      <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
                     </form>
                     <a href="{% url 'book-details' book.title %}" class="details-btn btn btn-block">Details</a>
                   </div>
@@ -275,10 +275,10 @@
               <p><strong>Price: ${{ book.cost }}</strong></p>
             </div>
             <div class="card-footer">
-                <form method="POST" style=" display:inline!important;">
-                    {% csrf_token %}
-                    <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
-                </form>
+              <form method="POST" style=" display:inline!important;">
+                {% csrf_token %}
+                <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
+              </form>
               <a href="{% url 'book-details' book.title %}" class="details-btn btn btn-block">Details</a>
             </div>
           </div>
@@ -304,7 +304,9 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
   {% if out_of_stock_flag == True %}
-    <script>alert("We do not have the stock to add the books to your cart.")</script>
+  <script>
+    alert("We do not have the stock to add the books to your cart.")
+  </script>
   {% endif %}
 </body>
 
