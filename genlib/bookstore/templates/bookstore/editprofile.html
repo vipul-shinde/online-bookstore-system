@@ -18,7 +18,7 @@
 
 </head>
 
-<body> {{ cartCount }}
+<body>
   <section id="title">
 
     <div class="container-fluid">
@@ -48,7 +48,7 @@
 
             {% if not request.user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="login.html">Sign in</a>
+              <a class="nav-link" href="/login.html">Sign in</a>
             </li>
 
             <!-- Else show Edit Profile and Sign Out -->
@@ -70,7 +70,7 @@
               {% else %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                 <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>

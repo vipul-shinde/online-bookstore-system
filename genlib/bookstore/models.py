@@ -161,14 +161,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Promotion(models.Model):
     code = models.CharField(max_length=10, primary_key=True)
-    percentage = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
-    start_date = models.DateField()
-    end_date = models.DateField()
-    description = models.TextField()
-
-    def clean(self):
-        if self.start_data is not None and self.end_data is not None and self.end_date < self.start_data:
-            raise ValidationError("End date should be greater than start data")
+    percentage = models.IntegerField()
+    start_date = models.DateField(blank=True)
+    end_date = models.DateField(blank=True)
+    description = models.TextField(default="")
 
     def __str__(self):
         return self.code
@@ -176,6 +172,8 @@ class Promotion(models.Model):
 
 @receiver(post_save, sender=Promotion)
 def email_promotion(sender, instance, **kwargs):
+    if instance.code == "SYSTEM":
+        return
     mail_subject = "New promotion added on Genlib"
     mail_message = instance.description + "\nUse code: " + instance.code + "\nOffer expires: " + instance.end_date.strftime("%Y-%m-%d")
     mail_sender = "kushaj123456@gmail.com"
@@ -209,15 +207,17 @@ class CartItem(models.Model):
 
 
 class OrderManager(models.Manager):
-    def create_order(self, user, total, date, time, first_name, last_name,
+    def create_order(self, user, total, promotion, date, time, first_name, last_name,
                      phone, street, city, state, zip_code, county, country,
-                     card_name, card_num, card_exp, card_cvv, card_four):
+                     card_name, card_num, card_exp, card_cvv, card_four, status="Incomplete"):
         order = self.create(user=user,
                             total=total,
+                            promotion=promotion,
                             date=date,
                             time=time,
                             first_name=first_name,
                             last_name=last_name,
+                            phone=phone,
                             street=street,
                             city=city,
                             state=state,
@@ -228,16 +228,17 @@ class OrderManager(models.Manager):
                             card_num=card_num,
                             card_exp=card_exp,
                             card_cvv=card_cvv,
-                            card_four=card_four)
+                            card_four=card_four,
+                            status=status)
         return order
 
 
 class Order(models.Model):
-    id = models.CharField(primary_key=True, unique=True, default=uuid.uuid4, editable=False, max_length=10)
-    status = models.CharField(max_length=20, default="Confirmed")
+    id = models.AutoField(primary_key=True)
+    status = models.CharField(max_length=20, default="Incomplete") # Confirmed
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.DecimalField(decimal_places=2, max_digits=5)
-    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True, blank=True)
+    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True)
 
     date = models.DateField()
     time = models.TimeField()
@@ -262,7 +263,7 @@ class Order(models.Model):
     objects = OrderManager()
 
     def __str__(self):
-        return str(self.id)
+        return str(self.user.email)
 
 
 class OrderItemManager(models.Manager):

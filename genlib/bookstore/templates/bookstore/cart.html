@@ -131,7 +131,10 @@
           <p><span><strong>Subtotal</strong></span> : ${{ total_cost }}</p>
         </div>
         <div class="col-lg-2 cart-container">
-          <a href="/shipping.html" class="btn btn-sm explore-button" type="submit">Continue to Checkout</a>
+            <form method="POST">
+                {% csrf_token %}
+          <button class="btn btn-sm explore-button" type="submit" name="continue_checkout" value="continue_checkout">Continue to Checkout</button>
+        </form>
         </div>
       </div>
     </div>
@@ -155,6 +158,11 @@
   {% if minus_flag == True %}
   <script>
     alert("We do not have the stock to add the book to your cart.")
+  </script>
+  {% endif %}
+  {% if checkout_flag == True %}
+  <script>
+    alert("Cannot checkout with an exmpy cart.")
   </script>
   {% endif %}
 </body>

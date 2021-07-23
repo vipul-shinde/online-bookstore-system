@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('add_to_cart', views.add_to_cart, name='add_to_cart'),
     path('shipping.html', views.shipping, name='shipping'),
+    path('payment.html', views.payment, name='payment'),
 
     path('password-reset/',
          auth_views.PasswordResetView.as_view(

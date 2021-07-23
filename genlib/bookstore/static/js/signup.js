@@ -6,14 +6,30 @@ function validation() {
   var email = document.signupForm.userEmail;
   var number = document.signupForm.userPhone;
   var check = document.signupForm.something;
+  var cvv = document.signupForm.card_cvv;
+  var cardName = document.signupForm.card_name;
+  var year = document.signupForm.card_year;
+  var month = document.signupForm.card_month;
+  var cardNumber = document.signupForm.card_num;
+  var check = document.signupForm.something;
   var checkBox = document.getElementById("checkBox");
   if (checkAll(name, name2, email, pass1, pass2, number)) {
     if (passValidation(pass1, pass2, 8, 16)) {
       if (nameValid(name, name2)) {
         if (validateEmail(email)) {
           if (validateTerms(checkBox)) {
-            //   return true;
-            window.location.href = "signup-confirmation.html"
+            if (checkAllCard(cvv, cardName, year, month, cardNumber)) {
+              if(lengthValidation(cardNumber, cvv, 16, 3, name, year, month)){
+
+              }
+              else {
+                  check.value = "not_working";
+                  return false;
+              }
+            } else {
+              check.value = "not_working";
+              return false;
+            }
           }else {
             check.value = "not_working";
           return false;
@@ -129,4 +145,51 @@ function validateTerms(checkBox) {
     checkBox.focus();
     return false;
   }
+}
+
+
+
+function checkAllCard(cvv, cardName, year, month, cardNumber) {
+  var cvv_len = cvv.value.length;
+  var year_len = year.value.length;
+
+
+    if ((cardName.value.length == 0 || month.value == "Select" || cardNumber.value.length == 0 || year.value == "Select" || cvv_len == 0) && (cardName.value.length != 0 || month.value != "Select" || cardNumber.value.length != 0 || year.value != "Select" || cvv_len != 0)) {
+        cardName.classList.add("border-danger");
+        month.classList.add("border-danger");
+        year.classList.add("border-danger");
+        cvv.classList.add("border-danger");
+        cardNumber.classList.add("border-danger");
+
+        alert("Fill out all fields");
+    }
+    if ((cardName.value.length != 0 && month.value != "Select" && cardNumber.value.length != 0 && year.value != "Select" && cvv_len != 0) || (cardName.value.length == 0 && month.value == "Select" && cardNumber.value.length == 0 && year.value == "Select" && cvv_len == 0)) {
+        cardName.classList.remove("border-danger");
+        month.classList.remove("border-danger");
+        year.classList.remove("border-danger");
+        cvv.classList.remove("border-danger");
+        cardNumber.classList.remove("border-danger");
+        return true;
+    }
+else {
+    return true;
+}
+
+}
+
+function lengthValidation(cardNumber, cvv, nLen, cLen, cardName, year, month) {
+  var cardNumber_len = cardNumber.value.length;
+  var cvv_len = cvv.value.length;
+  if ((cardName.value.length != 0 && month.value != "Select" && cardNumber.value.length != 0 && year.value != "Select" && cvv_len != 0)) {
+    if (cardNumber_len != nLen || cvv_len != cLen) {
+      cardNumber.classList.add("border-danger");
+      cvv.classList.add("border-danger");
+      alert("Incorrect length of Card cardNumber(16) or CVV(3)");
+      return false;
+    } else {
+      cardNumber.classList.remove("border-danger");
+      cvv.classList.remove("border-danger");
+    }
+  }
+  return true;
 }
