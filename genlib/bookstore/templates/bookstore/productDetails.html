@@ -31,7 +31,7 @@
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <form class="d-flex" method="POST">
-                  {% csrf_token %}
+                {% csrf_token %}
                 <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
                 <button class="btn search-button" type="submit" name="search_button" value="search_button">Search</button>
               </form>
@@ -55,7 +55,7 @@
             {% else %}
             <li class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                <b>&nbsp; {{ user.first_name}}</b>  <i class="fa fa-user"></i>
+                <b>&nbsp; {{ user.first_name}}</b> <i class="fa fa-user"></i>
               </a>
               {% if user.is_staff %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
@@ -85,95 +85,53 @@
     </div>
   </section>
 
-  <button onclick="goBack()">Go Back</button>
-
-  <script>
-    function goBack() {
-      window.history.back();
-    }
-  </script>
-
-
-
   <section id="contentMain">
-    <div class="container-fluid-contentMain" id="product-section">
-      <div class="row  bg-white">
-        <div class="col-md-6">
-          <img src="..\..\static\{{ book.image_path }}" class="img-fluid" alt="book1">
+    <div class="container-fluid" id="product-section">
+      <div class="row border border border-5 bg-white">
+        <div class="col-lg-6 border-end">
+          <img src="..\..\static\{{ book.image_path }}" class="book-image" alt="book1">
         </div>
-        <div class=" col-md-6">
-          <div class="row">
-            <div class="col-md-12">
+        <div class=" col-lg-6">
+          <div class="row inner-row">
+            <div class="col-lg-12 col-des align-items-center">
               <h1>{{ book.title }}</h1>
             </div>
-          </div><!-- end row-->
-          <div class="row">
-            <div class="col-md-12">
-              <span class="label label-primary">by {{ book.author }}</span>
+            <hr>
+            <div class="col-lg-12 col-des">
+              <p><em>Author:</em> <span><u>{{ book.author}}</u></span></p>
             </div>
-          </div><!-- end row -->
-          <div class="row">
-            <div class="col-md-12">
-              <p class="description">
-                {{ book.description }}
-              </p>
+            <div class="col-lg-12 col-des">
+              <p><em>Published by:</em> <span>{{ book.publisher}}</span></p>
             </div>
-          </div><!-- end row -->
-          <div class="row">
-            <div class="col-md-3">
-              <span class="sr-only">Four out of Five Stars</span>
-              <span class="fa fa-star gold" aria-hidden="true"></span>
-              <span class="fa fa-star gold" aria-hidden="true"></span>
-              <span class="fa fa-star gold" aria-hidden="true"></span>
-              <span class="fa fa-star gold" aria-hidden="true"></span>
-              <span class="fa fa-star" aria-hidden="true"></span>
-              <span class="label label-success">{{ book.rating }}</span>
+            <div class="col-lg-6 col-des">
+              <p><em>Edition:</em> <span>{{ book.edition}}</span></p>
             </div>
-            <div class="col-md-3">
-              <span class="monospaced">Write a Review</span>
+            <div class="col-lg-6 col-des">
+              <p><em>Published Year:</em> <span>{{ book.publication_year}}</span></p>
             </div>
-          </div><!-- end row -->
-          <div class="row">
-            <div class="col-md-12 bottom-rule">
-              <h4 class="product-price">Price: {{ book.cost }}</h4>
+            <div class="col-lg-12 col-des">
+              <p><em>ISBN:</em> <span>{{ book.isbn}}</span></p>
             </div>
-          </div><!-- end row -->
-
-          <div class="row add-to-cart">
-            <div class="col-md-4 product-qty text-center nav justify-content-center">
-              <input type="number" min="1" max="1000" value="1">
+            <div class="col-lg-12 col-des">
+              <p><strong>Description:</strong> <span>{{ book.description|truncatewords:100}}</span></p>
             </div>
-            <div class="col-md-4">
-              <button class="btn btn-block details-btn">
-                Add to Cart
-              </button>
+            <div class="col-lg-12 col-des">
+              <span class="fas fa-star star" data-rating="1"></span>
+              <span class="fas fa-star star" data-rating="2"></span>
+              <span class="fas fa-star star" data-rating="3"></span>
+              <span class="fas fa-star star" data-rating="4"></span>
+              <span class="far fa-star star" data-rating="5"></span>
+              <input type="hidden" name="whatever2" class="rating-value" value="{{ book.rating }}">
             </div>
-          </div><!-- end row -->
-
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <span class="monospaced">In Stock</span>
+            <div class="col-lg-12 col-des">
+              <p><strong>Price: </strong><span>$ {{ book.cost}}</span></p>
             </div>
-          </div><!-- end row -->
-
-          <div class="row">
-            <div class="col-md-12 bottom-rule top-10"></div>
-          </div><!-- end row -->
-          <!-- Nav tabs -->
-          <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <a class="nav-item nav-link active change-color" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Discription</a>
-              <a class="nav-item nav-link change-color" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Reviews</a>
-              <a class="nav-item nav-link change-color" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
+            <div class="col-lg-12 col-des">
+              <form method="POST" style=" display:inline!important;">
+                  {% csrf_token %}
+                  <button class="add-cart-btn btn" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
+              </form>
             </div>
-          </nav>
-          <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">1 Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit
-              butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">2 Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
-              retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">3 Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
-              retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</div>
           </div>
         </div>
       </div><!-- end container -->
@@ -196,6 +154,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="..\..\static\js\details.js"></script>
+
+  {% if out_of_stock_flag == True %}
+    <script>alert("We do not have the stock to add the books to your cart.")</script>
+  {% endif %}
 
 </body>
 
