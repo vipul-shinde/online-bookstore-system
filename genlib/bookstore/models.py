@@ -35,7 +35,7 @@ class UserManager(BaseUserManager):
                     card_name1="", card_num1="", card_exp1="", card_cvv1="", card_four1="",
                     card_name2="", card_num2="", card_exp2="", card_cvv2="", card_four2="",
                     card_name3="", card_num3="", card_exp3="", card_cvv3="", card_four3="",
-                    **kwargs):
+                    promos_used="", **kwargs):
         email = self.normalize_email(email)
         user = self.model(first_name=first_name,
                           last_name=last_name,
@@ -65,6 +65,7 @@ class UserManager(BaseUserManager):
                           card_exp3=card_exp3,
                           card_cvv3=card_cvv3,
                           card_four3=card_four3,
+                          promos_used=promos_used,
                           **kwargs)
         user.set_password(password)
         user.save()
@@ -75,7 +76,7 @@ class UserManager(BaseUserManager):
                          card_name1="", card_num1="", card_exp1="", card_cvv1="", card_four1="",
                          card_name2="", card_num2="", card_exp2="", card_cvv2="", card_four2="",
                          card_name3="", card_num3="", card_exp3="", card_cvv3="", card_four3="",
-                         **kwargs):
+                         promos_used="", **kwargs):
         kwargs.setdefault('is_staff', True)
         kwargs.setdefault('is_superuser', True)
         kwargs.setdefault('is_active', True)
@@ -109,6 +110,7 @@ class UserManager(BaseUserManager):
                                 card_exp3=card_exp3,
                                 card_cvv3=card_cvv3,
                                 card_four3=card_four3,
+                                promos_used=promos_used,
                                 **kwargs)
 
 
@@ -149,6 +151,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_suspended = models.BooleanField(default=False)
+    promos_used = models.CharField(max_length=200, default="")
 
     objects = UserManager()
 
@@ -164,7 +167,7 @@ class Promotion(models.Model):
     percentage = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     start_date = models.DateField()
     end_date = models.DateField()
-    description = models.TextField()
+    description = models.TextField(default="")
 
     def clean(self):
         if self.start_data is not None and self.end_data is not None and self.end_date < self.start_data:

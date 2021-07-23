@@ -29,7 +29,6 @@ def index(request):
 
     if request.method == "POST":
         if request.POST.get("espionage_cat"):
-            print("enters")
             return search_function(request, "espionage", True)
         if request.POST.get("contemporary_cat"):
             return search_function(request, "contemporary", True)
@@ -481,7 +480,6 @@ def cart(request):
             price = int(book.quantity)*float(book.book.cost)
             price = f"{price:.2f}"
             prices.append(price)
-        print(prices)
         total_cost = 0
         for book in books:
             total_cost += int(book.quantity)*float(book.book.cost)
@@ -534,7 +532,6 @@ def cart(request):
 
             if book.stock == 0:
                 context["minus_flag"] = True
-                print("Enters")
                 return render(request, 'bookstore/cart.html', context)
 
             book.stock -= 1
@@ -544,6 +541,13 @@ def cart(request):
 
             context = get_context()
 
+        if request.POST.get("continue_checkout"):
+            cartCount = getCartCount(request)
+            if cartCount == 0:
+                context['checkout_flag'] = True
+                return render(request, 'bookstore/cart.html', context)
+            else:
+                return redirect('shipping')
         return render(request, 'bookstore/cart.html', context)
     else:
         return render(request, 'bookstore/cart.html', context)
@@ -556,4 +560,131 @@ def order_history(request):
     return render(request, 'bookstore/orderHistory.html')
 
 def shipping(request):
-    return render(request, 'bookstore/shipping.html')
+    orig_user = deepcopy(request.user)
+    def get_context():
+        books = CartItem.objects.filter(user=request.user)
+        prices = []
+        for book in books:
+            price = int(book.quantity)*float(book.book.cost)
+            price = f"{price:.2f}"
+            prices.append(price)
+        try:
+            order = Order.objects.get(user=request.user)
+            total_cost = order.total
+        except:
+            total_cost = 0
+            for book in books:
+                total_cost += int(book.quantity)*float(book.book.cost)
+            total_cost = f"{total_cost:.2f}"
+
+        context = {
+            'cartCount': getCartCount(request),
+            'books_in_cart': zip(CartItem.objects.filter(user=request.user), prices),
+            'total_cost': total_cost,
+            'promo_code_name': "",
+            'promo_code_discount': 0,
+        }
+        return context
+    context = get_context()
+
+    if request.method == "POST":
+        if request.POST.get("search_button"):
+            return search_function(request, request.POST["search"])
+
+        if request.POST.get("promo_button"):
+            if request.POST["promo_code"] == "":
+                context['promo_none_flag'] = True
+                return render(request, 'bookstore/shipping.html', context)
+
+            promos_used = request.user.promos_used.split(',')
+            if request.POST['promo_code'] in promos_used:
+                context['promo_flag'] = True
+                return render(request, 'bookstore/shipping.html', context)
+            
+            can_apply_promo = False
+            try:
+                promo = Promotion.objects.get(code=request.POST['promo_code'])
+                if promo.start_date > datetime.date.today():
+                    context['promo_start_flag'] = True
+                    return render(request, 'bookstore/shipping.html', context)
+                if promo.end_date < datetime.date.today():
+                    context['promo_end_flag'] = True
+                    return render(request, 'bookstore/shipping.html', context)
+                
+                can_apply_promo = True
+            except:
+                context['promo_invalid_flag'] = True
+                return render(request, 'bookstore/shipping.html', context)
+
+        if can_apply_promo:
+            try:
+                order = Order.objects.get(user=request.user)
+            except:
+                order = Order.objects.create_order(user=user)
+            total = get_context()['total_cost']
+            total = total * (100 - int(Promotion.objects.get(code=request.POST['promo_code']).percentage))
+            order.total = total
+            order.save()
+
+            context = get_context()
+            return render(request, 'bookstore/shipping.html', context)
+        else:
+            # try:
+            #     order = Order.objects.get(user=request.user)
+            #     order.delete()
+            # except:
+            #     pass
+            
+            # first_name = request.POST['userFirst_name']
+            # last_name = request.POST['userLast_name']
+            # phone = request.POST['userPhone']
+            # street = request.POST['userStreet']
+            # city = request.POST['userCity']
+            # state = request.POST['userState']
+            # county = request.POST['userCounty']
+            # country = request.POST['userCountry']
+            # zip_code = request.POST['userZip']
+
+            # if "save_address" in request.POST.getlist("checks[]"):
+            #     user = request.user
+            #     user.first_name = first_name
+            #     user.last_name = last_name
+            #     user.phone = phone
+            #     user.street = street
+            #     user.city = city
+            #     user.state = state
+            #     user.county = county
+            #     user.country = country
+            #     user.zip_code = zip_code
+            #     user.save()
+
+            # order = Order.objects.create_order(
+            #     user=request.user,
+            #     total=total,
+            #     date=datetime.date.today(),
+            #     time=datetime.datetime.now().strftime("%H:%M:%S"),
+            #     first_name=first_name,
+            #     last_name=last_name,
+            #     phone=phone,
+            #     street=street,
+            #     city=city,
+            #     state=state,
+            #     zip_code=zip_code,
+            #     county=county,
+            #     country=country,
+            #     card_name="",
+            #     card_num="",
+            #     card_exp="",
+            #     card_cvv="",
+            #     card_four="",
+            # )
+            # order.save()
+
+            return render(request, 'bookstore/shipping.html', context)
+            context = get_context()
+            return render(request, 'bookstore/payment.html', context)
+    else:
+        return render(request, 'bookstore/shipping.html', context)
+
+def payment(request):
+    return render(request, 'bookstore/payment.html')
