@@ -21,32 +21,65 @@
 <body>
 
   <section id="title">
+
     <div class="container-fluid">
       <nav class="navbar navbar-expand-lg">
-        <a class="navbar-brand" href="index.html">Genlib</a>
+        <a class="navbar-brand" href="/index.html">Genlib</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search">
-                <button class="btn search-button" type="submit">Search</button>
+              <form class="d-flex" method="POST">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
+                <button class="btn search-button" type="submit" name="search_button" value="search_button">Search</button>
               </form>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="browse-books.html">Browse</a>
+              <a class="nav-link" href="/browse-books.html">Browse</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="search.html">Advanced Search</a>
+              <a class="nav-link" href="/search.html">Advanced Search</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+              <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i><span class="fa-layers-text fa-inverse cart-value">{{ cartCount }}</span></a>
             </li>
+
+            {% if not request.user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="login.html">Sign in</a>
             </li>
+
+            <!-- Else show Edit Profile and Sign Out -->
+            {% else %}
+            <li class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                <b>&nbsp; {{ user.first_name}}</b> <i class="fa fa-user"></i>
+              </a>
+              {% if user.is_staff %}
+              <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                <li><a class="dropdown-item" href="/admin-home.html">Admin Portal</a></li>
+                <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
+                <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+              </ul>
+              {% else %}
+              <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
+                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+              </ul>
+              {% endif %}
+            </li>
+            {% endif %}
           </ul>
         </div>
       </nav>
@@ -56,19 +89,19 @@
   <section id="searchBarSec">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 search-col">
           <div class="input-group" id="adv-search">
             <input type="text" class="form-control" placeholder="eg: Harry Potter" />
             <div class="input-group-btn">
               <div class="btn-group" role="group">
                 <div class="dropdown dropdown-lg">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
                   <div class="dropdown-menu dropdown-menu-right container-fluid-dropdown" role="menu">
-                    <form class="form-horizontal" role="form">
+                    <form class="form-horizontal" role="form" method="POST">
                       <div class="form-group">
-                        <label for="filter">Filter by</label>
+                        <label for="filter">Filter by: </label>
                         <select class="form-control">
-                          <option value="0" selected>All Snippets</option>
+                          <option value="0" selected>Select</option>
                           <option value="1">Featured</option>
                           <option value="2">Most popular</option>
                           <option value="3">Top rated</option>
@@ -80,9 +113,9 @@
                         </select>
                       </div>
                       <div class="form-group">
-                        <label for="filter">Categories</label>
+                        <label for="filter">Select Category:</label>
                         <select class="form-control">
-                          <option value="0" selected>All Snippets</option>
+                          <option value="0" selected>Select</option>
                           <option value="1">Adventure</option>
                           <option value="2">Thriller</option>
                           <option value="3">Biography</option>
@@ -93,17 +126,51 @@
                       <div class="form-group">
                         <label for="filter">Search by</label>
                         <select class="form-control">
-                          <option value="0" selected>All Snippets</option>
+                          <option value="0" selected>Select</option>
                           <option value="1">Author</option>
                           <option value="2">Book Title</option>
                           <option value="3">Publisher</option>
                         </select>
                       </div>
-                      <button type="submit" class="btn btn-primary">Confirm</button>
+                      <button type="submit" class="btn explore-button">Confirm</button>
                     </form>
                   </div>
                 </div>
-                <button type="button" class="btn btn-primary">Search</button>
+                <button type="button" class="btn add-cart-btn">Search</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 search-col">
+          <hr>
+        </div>
+        <div class="col-lg-12 search-col">
+          <h3>Search Results</h3>
+          <div class="row">
+            <div class="book-column col-lg-3 col-md-6">
+              <div class="card h-100">
+                <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
+                <div class="card-header">
+                  <h3 class="">Book #1</h3>
+                </div>
+                <div class="card-body">
+                  <p>Book Description</p>
+                  <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
+                  <a href="#" class="details-btn btn btn-block">Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="book-column col-lg-3 col-md-6">
+              <div class="card h-100">
+                <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
+                <div class="card-header">
+                  <h3 class="">Book #2</h3>
+                </div>
+                <div class="card-body">
+                  <p>Book Description</p>
+                  <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
+                  <a href="#" class="details-btn btn btn-block">Details</a>
+                </div>
               </div>
             </div>
           </div>
