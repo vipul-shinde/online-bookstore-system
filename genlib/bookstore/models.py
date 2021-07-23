@@ -35,7 +35,7 @@ class UserManager(BaseUserManager):
                     card_name1="", card_num1="", card_exp1="", card_cvv1="", card_four1="",
                     card_name2="", card_num2="", card_exp2="", card_cvv2="", card_four2="",
                     card_name3="", card_num3="", card_exp3="", card_cvv3="", card_four3="",
-                    promos_used="", **kwargs):
+                    **kwargs):
         email = self.normalize_email(email)
         user = self.model(first_name=first_name,
                           last_name=last_name,
@@ -65,7 +65,6 @@ class UserManager(BaseUserManager):
                           card_exp3=card_exp3,
                           card_cvv3=card_cvv3,
                           card_four3=card_four3,
-                          promos_used=promos_used,
                           **kwargs)
         user.set_password(password)
         user.save()
@@ -76,7 +75,7 @@ class UserManager(BaseUserManager):
                          card_name1="", card_num1="", card_exp1="", card_cvv1="", card_four1="",
                          card_name2="", card_num2="", card_exp2="", card_cvv2="", card_four2="",
                          card_name3="", card_num3="", card_exp3="", card_cvv3="", card_four3="",
-                         promos_used="", **kwargs):
+                         **kwargs):
         kwargs.setdefault('is_staff', True)
         kwargs.setdefault('is_superuser', True)
         kwargs.setdefault('is_active', True)
@@ -110,7 +109,6 @@ class UserManager(BaseUserManager):
                                 card_exp3=card_exp3,
                                 card_cvv3=card_cvv3,
                                 card_four3=card_four3,
-                                promos_used=promos_used,
                                 **kwargs)
 
 
@@ -151,7 +149,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_suspended = models.BooleanField(default=False)
-    promos_used = models.CharField(max_length=200, default="")
 
     objects = UserManager()
 
@@ -164,14 +161,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Promotion(models.Model):
     code = models.CharField(max_length=10, primary_key=True)
-    percentage = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
-    start_date = models.DateField()
-    end_date = models.DateField()
+    percentage = models.IntegerField()
+    start_date = models.DateField(blank=True)
+    end_date = models.DateField(blank=True)
     description = models.TextField(default="")
-
-    def clean(self):
-        if self.start_data is not None and self.end_data is not None and self.end_date < self.start_data:
-            raise ValidationError("End date should be greater than start data")
 
     def __str__(self):
         return self.code
@@ -179,6 +172,8 @@ class Promotion(models.Model):
 
 @receiver(post_save, sender=Promotion)
 def email_promotion(sender, instance, **kwargs):
+    if instance.code == "SYSTEM":
+        return
     mail_subject = "New promotion added on Genlib"
     mail_message = instance.description + "\nUse code: " + instance.code + "\nOffer expires: " + instance.end_date.strftime("%Y-%m-%d")
     mail_sender = "kushaj123456@gmail.com"
@@ -212,15 +207,17 @@ class CartItem(models.Model):
 
 
 class OrderManager(models.Manager):
-    def create_order(self, user, total, date, time, first_name, last_name,
+    def create_order(self, user, total, promotion, date, time, first_name, last_name,
                      phone, street, city, state, zip_code, county, country,
-                     card_name, card_num, card_exp, card_cvv, card_four):
+                     card_name, card_num, card_exp, card_cvv, card_four, status="Incomplete"):
         order = self.create(user=user,
                             total=total,
+                            promotion=promotion,
                             date=date,
                             time=time,
                             first_name=first_name,
                             last_name=last_name,
+                            phone=phone,
                             street=street,
                             city=city,
                             state=state,
@@ -231,16 +228,17 @@ class OrderManager(models.Manager):
                             card_num=card_num,
                             card_exp=card_exp,
                             card_cvv=card_cvv,
-                            card_four=card_four)
+                            card_four=card_four,
+                            status=status)
         return order
 
 
 class Order(models.Model):
-    id = models.CharField(primary_key=True, unique=True, default=uuid.uuid4, editable=False, max_length=10)
-    status = models.CharField(max_length=20, default="Confirmed")
+    id = models.AutoField(primary_key=True)
+    status = models.CharField(max_length=20, default="Incomplete") # Confirmed
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.DecimalField(decimal_places=2, max_digits=5)
-    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True, blank=True)
+    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True)
 
     date = models.DateField()
     time = models.TimeField()
@@ -265,7 +263,7 @@ class Order(models.Model):
     objects = OrderManager()
 
     def __str__(self):
-        return str(self.id)
+        return str(self.user.email)
 
 
 class OrderItemManager(models.Manager):
