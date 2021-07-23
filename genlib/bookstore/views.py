@@ -701,6 +701,11 @@ def shipping(request):
         if request.POST.get("search_button"):
             return search_function(request, request.POST["search"])
 
+        # if request.POST.get("remove_promo_button"):
+        #     order.promo = Promotion(code="SYSTEM", start_date=datetime.date.today(), end_date=datetime.date.today(), percentage=0)
+        #     order.total = order.orig_total
+        #     order.save()
+
         if request.POST.get("promo_button"):
             if request.POST["promo_code"] == "":
                 context['promo_none_flag'] = True
