@@ -28,15 +28,30 @@ def index(request):
     }
 
     if request.method == "POST":
-        if request.POST.get("search_button", "None") == "search_button":
+        if request.POST.get("espionage_cat"):
+            print("enters")
+            return search_function(request, "espionage", True)
+        if request.POST.get("contemporary_cat"):
+            return search_function(request, "contemporary", True)
+        if request.POST.get("classics_cat"):
+            return search_function(request, "classics", True)
+        if request.POST.get("literary_cat"):
+            return search_function(request, "literary", True)
+        if request.POST.get("horror_cat"):
+            return search_function(request, "horror", True)
+        if request.POST.get("all_cat"):
+            return search_function(request, "all", True)
+        
+        if request.POST.get("search_button"):
             return search_function(request, request.POST["search"])
 
-        err = add_to_cart(request, request.POST['add_to_cart'], 1)
-        if err == "redirect":
-            return redirect('login')
-        elif err == "out_of_stock":
-            context['out_of_stock_flag'] = True
-            return render(request, 'bookstore/index.html', context)
+        if request.POST.get("add_to_cart"):
+            err = add_to_cart(request, request.POST['add_to_cart'], 1)
+            if err == "redirect":
+                return redirect('login')
+            elif err == "out_of_stock":
+                context['out_of_stock_flag'] = True
+                return render(request, 'bookstore/index.html', context)
 
         context['cartCount'] = getCartCount(request)
         return render(request, 'bookstore/index.html', context)
@@ -59,35 +74,35 @@ def signup(request):
         else:
             receive_promotions = False
 
-        # if request.POST['userStreet'] != "":
-        #     street = request.POST['userStreet']
-        #     city = request.POST['userCity']
-        #     state = request.POST['userState']
-        #     zip_code = request.POST['userZip_code']
-        #     county = request.POST['userCounty']
-        #     country = request.POST['userCountry']
-        # else:
-        street = ""
-        city = ""
-        state = ""
-        zip_code = ""
-        county = ""
-        country = ""
+        if request.POST['userStreet'] != "":
+            street = request.POST['userStreet']
+            city = request.POST['userCity']
+            state = request.POST['userState']
+            zip_code = request.POST['userZip_code']
+            county = request.POST['userCounty']
+            country = request.POST['userCountry']
+        else:
+            street = ""
+            city = ""
+            state = ""
+            zip_code = ""
+            county = ""
+            country = ""
 
-        # if request.POST['userCard_name'] != "":
-        #     card_count = 1
-        #     card_name = request.POST['userCard_name']
-        #     card_num = request.POST['userCard_num']
-        #     card_exp = f"{request.POST['userCard_month']}/{request.POST['userCard_year']}
-        #     card_cvv = request.POST['userCard_cvv']
-        #     card_four = card_num[-4:]
-        # else:
-        card_count = 0
-        card_name = ""
-        card_num = ""
-        card_exp = ""
-        card_cvv = ""
-        card_four = ""
+        if request.POST['userCard_name'] != "":
+            card_count = 1
+            card_name = request.POST['userCard_name']
+            card_num = request.POST['userCard_num']
+            card_exp = f"{request.POST.get('userCard_month')}/{request.POST.get('userCard_year')}"
+            card_cvv = request.POST['userCard_cvv']
+            card_four = card_num[-4:]
+        else:
+            card_count = 0
+            card_name = ""
+            card_num = ""
+            card_exp = ""
+            card_cvv = ""
+            card_four = ""
 
 
         objects = User.objects.all()
@@ -446,9 +461,9 @@ def add_to_cart(request, isbn, quantity):
         return "redirect"
 
 
-def search_function(request, s):
+def search_function(request, s, advanced=False):
     context = {
-
+        'cartCount': getCartCount(request),
     }
     return render(request, 'bookstore/search.html', context)
 
@@ -461,13 +476,19 @@ def browse_books(request):
 def cart(request):
     def get_context():
         books = CartItem.objects.filter(user=request.user)
+        prices = []
+        for book in books:
+            price = int(book.quantity)*float(book.book.cost)
+            price = f"{price:.2f}"
+            prices.append(price)
+        print(prices)
         total_cost = 0
         for book in books:
             total_cost += int(book.quantity)*float(book.book.cost)
         total_cost = f"{total_cost:.2f}"
         context = {
             'cartCount': getCartCount(request),
-            'books_in_cart': CartItem.objects.filter(user=request.user),
+            'books_in_cart': zip(CartItem.objects.filter(user=request.user), prices),
             'total_cost': total_cost,
         }
         return context
