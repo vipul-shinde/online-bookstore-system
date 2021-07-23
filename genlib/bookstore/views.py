@@ -246,7 +246,22 @@ def book_detail(request, title):
         'books': Book.objects.all(),
         'cartCount': getCartCount(request),
     }
-    return render(request, 'bookstore/productDetails.html', context)
+    if request.method == "POST":
+        if request.POST.get("search_button"):
+            return search_function(request, request.POST["search"])
+
+        if request.POST.get("add_to_cart"):
+            err = add_to_cart(request, book.isbn, 1)
+            if err == "redirect":
+                return redirect('login')
+            elif err == "out_of_stock":
+                context['out_of_stock_flag'] = True
+                return render(request, 'bookstore/productDetails.html', context)
+
+            context['cartCount'] = getCartCount(request)
+            return render(request, "bookstore/productDetails.html", context)
+    else:
+        return render(request, 'bookstore/productDetails.html', context)
 
 @login_required
 def edit_profile(request):
