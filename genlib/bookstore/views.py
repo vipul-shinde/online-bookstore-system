@@ -463,10 +463,14 @@ def add_to_cart(request, isbn, quantity):
 def search_function(request, s, advanced=False):
     context = {
         'cartCount': getCartCount(request),
+        'books': Book.objects.all(),
     }
     return render(request, 'bookstore/search.html', context)
 
 def search(request):
+    context = {
+        'cartCount': getCartCount(request),
+    }
     return render(request, 'bookstore/search.html')
 
 def browse_books(request):
