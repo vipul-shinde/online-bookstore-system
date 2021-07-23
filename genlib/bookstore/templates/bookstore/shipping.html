@@ -123,16 +123,17 @@
               <span>Total (USD)</span>
               <strong>${{ total_cost }}</strong>
             </li>
-          </ul>
-          <form class="card p-2" method="POST">
-              {% csrf_token %}
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Promo code" name="promo_code" value="">
-              <div class="input-group-append">
-                <button type="submit" class="btn btn-secondary" name="promo_button" value="promo_button">Redeem</button>
+            <form class="card p-2" method="POST">
+                {% csrf_token %}
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Promo code" name="promo_code" value="">
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-secondary" name="promo_button" value="promo_button">Redeem</button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </ul>
+
         </div>
         <div class="col-md-8 order-md-1">
           <form class="needs-validation" novalidate="" method="POST" name="shipping-details">
