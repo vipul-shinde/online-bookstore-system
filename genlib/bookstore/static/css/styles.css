@@ -188,3 +188,28 @@ form {
 .order-card {
   margin-bottom: 25px;
 }
+
+/*************************************Book Details****************************/
+.book-image {
+  position: relative;
+  width: 50%;
+  top: 80px;
+  left: 20%;
+}
+
+.inner-row {
+  margin-top: 3rem;
+}
+
+.star-rating {
+  line-height:1.5;
+  font-size:1.2rem;
+}
+
+.fa-star{
+  color:#F07B3F;
+}
+
+.col-des {
+  margin-bottom: 10px;
+}
