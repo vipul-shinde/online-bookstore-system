@@ -280,6 +280,9 @@ def edit_profile(request):
     }
 
     if request.method == "POST":
+        if request.POST.get("search_button"):
+            return search_function(request, request.POST['search'])
+
         if request.POST['something'] == "not_working":
             return render(request, 'bookstore/editprofile.html', context)
         changes_made = []
@@ -475,21 +478,30 @@ def add_to_cart(request, isbn, quantity):
         return "redirect"
 
 
-def search_function(request, s, advanced=False):
-    context = {
-        'cartCount': getCartCount(request),
-        'books': Book.objects.all(),
-    }
-    return render(request, 'bookstore/search.html', context)
-
-def search(request):
-    context = {
-        'cartCount': getCartCount(request),
-    }
-    return render(request, 'bookstore/search.html')
-
 def browse_books(request):
-    return render(request, 'bookstore/browse-books.html')
+    def get_context():
+        context = {
+            'cartCount': getCartCount(request),
+            'books': Book.objects.all()
+        }
+        return context
+    context = get_context()
+
+    if request.method == "POST":
+        if request.POST.get("search_button"):
+            return search_function(request, request.POST["search"])
+
+        if request.POST.get("add_to_cart"):
+            err = add_to_cart(request, request.POST['add_to_cart'], 1)
+            if err == "redirect":
+                return redirect('login')
+            elif err == "out_of_stock":
+                context['out_of_stock_flag'] = True
+                return render(request, 'bookstore/browse-books.html', context)
+        context = get_context()
+        return render(request, 'bookstore/browse-books.html', context)
+    else:
+        return render(request, 'bookstore/browse-books.html', context)
 
 def cart(request):
     def get_context():
@@ -571,6 +583,19 @@ def cart(request):
     else:
         return render(request, 'bookstore/cart.html', context)
 
+
+def search_function(request, s, advanced=False):
+    context = {
+        'cartCount': getCartCount(request),
+        'books': Book.objects.all(),
+    }
+    return render(request, 'bookstore/search.html', context)
+
+def search(request):
+    context = {
+        'cartCount': getCartCount(request),
+    }
+    return render(request, 'bookstore/search.html', context)
 
 def admin_home(request):
     return render(request, 'bookstore/admin-home.html')

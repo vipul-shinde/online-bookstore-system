@@ -42,12 +42,12 @@
                 <a class="nav-link" href="/search.html">Advanced Search</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i><span class="fa-layers-text fa-inverse cart-value">{{ cartCount }}</span></a>
+                <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i><span class="fa-layers-text fa-inverse cart-value"> {{ cartCount }}</span></a>
               </li>
 
               {% if not request.user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="login.html">Sign in</a>
+                <a class="nav-link" href="/login.html">Sign in</a>
               </li>
 
               <!-- Else show Edit Profile and Sign Out -->
@@ -69,7 +69,7 @@
                 {% else %}
                 <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                   <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                  <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                  <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
                   <li>
                     <hr class="dropdown-divider">
                   </li>
@@ -90,153 +90,32 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search">
-                <button class="btn search-button" type="submit">Search</button>
-              </form>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Cart</a>
-            </li>
-          </ul>
         </div>
       </nav>
       <hr>
       <div class="row">
+        {% for book in books %}
         <div class="book-column col-lg-3 col-md-6">
           <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
+            <img src="..\..\static\{{ book.image_path }}" class="card-img-top" alt="...">
             <div class="card-header">
-              <h3 class="">Book #1</h3>
+              <h5 class="">{{ book.title }}</h5>
             </div>
             <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
+              <p>Author: {{ book.author }}</p>
+              <p class="text-lowercase fs-7"><span class="text-capitalize">Summary:</span> {{ book.description|truncatewords:20 }}</p>
+              <p><strong>Price: ${{ book.cost }}</strong></p>
+            </div>
+            <div class="card-footer">
+              <form method="POST" style=" display:inline!important;">
+                {% csrf_token %}
+                <button class="add-cart-btn btn btn-block" name="add_to_cart" value="{{ book.isbn }}">Add to Cart</button>
+              </form>
+              <a href="{% url 'book-details' book.title %}" class="details-btn btn btn-block">Details</a>
             </div>
           </div>
         </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #2</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #3</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #4</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #5</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #6</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #7</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #8</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #9</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-        <div class="book-column col-lg-3 col-md-6">
-          <div class="card h-100">
-            <img src="..\..\static\images\image-top.jpg" class="card-img-top" alt="...">
-            <div class="card-header">
-              <h3 class="">Book #10</h3>
-            </div>
-            <div class="card-body">
-              <p>Book Description</p>
-              <a href="#" class="add-cart-btn btn btn-block">Add to Cart</a>
-              <a href="#" class="details-btn btn btn-block">Details</a>
-            </div>
-          </div>
-        </div>
-
-
+        {% endfor %}
       </div>
     </div>
   </main>
