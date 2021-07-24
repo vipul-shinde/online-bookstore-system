@@ -31,7 +31,7 @@
               <li class="nav-item">
                 <form class="d-flex" method="POST">
                     {% csrf_token %}
-                  <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
+                  <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search" value="">
                   <button class="btn search-button" type="submit" name="search_button" value="search_button">Search</button>
                 </form>
               </li>
@@ -42,7 +42,7 @@
                 <a class="nav-link" href="/search.html">Advanced Search</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i><span class="fa-layers-text fa-inverse cart-value">{{ cartCount }}</span></a>
+                <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i><span class="fa-layers-text fa-inverse cart-value"> {{ cartCount }}</span></a>
               </li>
 
               {% if not request.user.is_authenticated %}

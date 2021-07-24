@@ -33,7 +33,7 @@
             <li class="nav-item">
               <form class="d-flex" method="POST">
                 {% csrf_token %}
-                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search">
+                <input class="form-control me-2" type="search" placeholder="Search for Books" aria-label="Search" name="search" value="">
                 <button class="btn search-button" type="submit" name="search_button" value="search_button">Search</button>
               </form>
             </li>

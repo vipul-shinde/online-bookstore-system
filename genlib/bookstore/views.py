@@ -43,10 +43,8 @@ def index(request):
             return search_function(request, "all", True)
         
         if request.POST.get("search_button"):
-            # request.search_query = request.POST['search']
-            # request.redirect = True
-            # return render(request, 'bookstore/search.html')
-            return search_function(request, request.POST["search"])
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
 
         if request.POST.get("add_to_cart"):
             err = add_to_cart(request, request.POST['add_to_cart'], 1)
@@ -107,7 +105,6 @@ def signup(request):
             card_cvv = ""
             card_four = ""
 
-
         objects = User.objects.all()
         for o in objects:
             if o.email == email:
@@ -132,6 +129,9 @@ def signup(request):
                     card_four1=card_four)
         user.set_password(password)
         user.save()
+
+        search = Search(user=user, query="", is_cat=False)
+        search.save()
 
         current_site = get_current_site(request)
         mail_subject = "Activate your genlib account"
@@ -252,7 +252,8 @@ def book_detail(request, title):
     }
     if request.method == "POST":
         if request.POST.get("search_button"):
-            return search_function(request, request.POST["search"])
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
 
         if request.POST.get("add_to_cart"):
             err = add_to_cart(request, book.isbn, 1)
@@ -285,7 +286,8 @@ def edit_profile(request):
 
     if request.method == "POST":
         if request.POST.get("search_button"):
-            return search_function(request, request.POST['search'])
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
 
         if request.POST['something'] == "not_working":
             return render(request, 'bookstore/editprofile.html', context)
@@ -493,7 +495,8 @@ def browse_books(request):
 
     if request.method == "POST":
         if request.POST.get("search_button"):
-            return search_function(request, request.POST["search"])
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
 
         if request.POST.get("add_to_cart"):
             err = add_to_cart(request, request.POST['add_to_cart'], 1)
@@ -528,8 +531,9 @@ def cart(request):
     context = get_context()
 
     if request.method == "POST":
-        if request.POST.get("search_button", "None") == "search_button":
-            return search_function(request, request.POST["search"])
+        if request.POST.get("search_button"):
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
 
         if request.POST.get("cross_button"):
             cart_item = CartItem.objects.filter(user=request.user, book=Book.objects.get(isbn=request.POST.get("cross_button")))[0]
@@ -587,52 +591,6 @@ def cart(request):
     else:
         return render(request, 'bookstore/cart.html', context)
 
-
-def search_function(request, s="", advanced=False):
-    def get_context():
-        context = {
-            'cartCount': getCartCount(request),
-            'books': Book.objects.all(),
-            'testing': "search_function",
-        }
-        return context
-    context = get_context()
-
-    if request.method == "POST":
-        request.redirect = "True"
-        return redirect('search')
-        # if request.POST.get("search_button1"):
-        #     return search_function(request, request.POST["search"])
-
-        # if request.POST.get("add_to_cart"):
-        #     err = add_to_cart(request, request.POST['add_to_cart'], 1)
-        #     if err == "redirect":
-        #         return redirect('login')
-        #     elif err == "out_of_stock":
-        #         context['out_of_stock_flag'] = True
-        #         return render(request, 'bookstore/search.html', context)
-        # context = get_context()
-        # return render(request, 'bookstore/search.html', context)
-
-
-def search(request):
-    if request.redirect:
-        pass
-    context = {
-        'cartCount': getCartCount(request),
-        'books': Book.objects.all(),
-        'testing': request.search_query,
-    }
-    if request.method == "POST":
-        return render(request, 'bookstore/search.html', context)
-    else:
-        return render(request, 'bookstore/search.html', context)
-
-def admin_home(request):
-    return render(request, 'bookstore/admin-home.html')
-
-def order_history(request):
-    return render(request, 'bookstore/orderHistory.html')
 
 def shipping(request):
     orig_user = deepcopy(request.user)
@@ -699,7 +657,8 @@ def shipping(request):
 
     if request.method == "POST":
         if request.POST.get("search_button"):
-            return search_function(request, request.POST["search"])
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
 
         # if request.POST.get("promo_remove_button"):
         #     order.promo = Promotion(code="SYSTEM", start_date=datetime.date.today(), end_date=datetime.date.today(), percentage=0)
@@ -839,3 +798,43 @@ def shipping(request):
 
 def payment(request):
     return render(request, 'bookstore/payment.html')
+
+def admin_home(request):
+    return render(request, 'bookstore/admin-home.html')
+
+def order_history(request):
+    return render(request, 'bookstore/orderHistory.html')
+
+def save_search(request, query="", is_cat=False):
+    search = Search.objects.filter(user=request.user)[0]
+    search.query = query
+    search.is_cat = is_cat
+    search.save()
+    return
+
+def search_function(query, operation=None):
+    books = Book.objects.all()
+    return books
+
+def search(request):
+    def get_context():
+        search = Search.objects.filter(user=request.user)[0]
+        if search.is_cat:
+            books = search_function(search.query, "category")
+        else:
+            books = search_function(search.query)
+
+        context = {
+            'cartCount': getCartCount(request),
+            'search_query': search.query,
+            'books': books
+        }
+        return context
+    context = get_context()
+
+    if request.method == "POST":
+        if request.POST.get("search_button1"):
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
+    else:
+        return render(request, 'bookstore/search.html', context)
