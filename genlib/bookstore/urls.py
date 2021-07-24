@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.contrib import admin
 
 from . import views
 
@@ -26,7 +27,7 @@ urlpatterns = [
     path('payment.html', views.payment, name='payment'),
     path('finalplaceorder.html', views.finalplaceorder, name='finalplaceorder'),
     path('orderConfirmation.html', views.orderConfirmation, name='orderConfirmation'),
-
+    
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name='bookstore/password-reset/password_reset.html',

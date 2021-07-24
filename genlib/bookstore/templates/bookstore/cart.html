@@ -165,6 +165,16 @@
     alert("Cannot checkout with an exmpy cart.")
   </script>
   {% endif %}
+  {% if success_flag == True %}
+  <script>
+      alert("All the books from your previous order have been added to your cart in the quantity you ordered before.")
+  </script>
+  {% endif %}
+  {% if err_flag == True %}
+  <script>
+      alert("Not all the books from your previous order were available in the quantity you ordered. Books in stock have been added to your cart.")
+  </script>
+  {% endif %}
 </body>
 
 </html>

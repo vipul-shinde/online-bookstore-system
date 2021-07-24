@@ -988,42 +988,47 @@ def finalplaceorder(request):
         return render(request, 'bookstore/finalplaceorder.html', context)
 
 
+def admin_home(request):
+    return redirect('admin/')
+
 def orderConfirmation(request):
     completed_orders = Order.objects.filter(user=request.user, status="Confirmed").order_by("-id")
-    order = Order.objects.filter(user=request.user, status="Incomplete")[0]
-    order.status = "Confirmed"
+    order = Order.objects.filter(user=request.user, status="Incomplete")
+    if len(order) != 0:
+        order = order[0]
+        order.status = "Confirmed"
 
-    books = CartItem.objects.filter(user=request.user)
-    prices = []
-    for book in books:
-        price = int(book.quantity)*float(book.book.cost)
-        price = f"{price:.2f}"
-        prices.append(price)
-    
-    for book in books:
-        orderItem = OrderItem.objects.add_order_item(order=order, book=book.book, quantity=book.quantity)
-        orderItem.save()
+        books = CartItem.objects.filter(user=request.user)
+        prices = []
+        for book in books:
+            price = int(book.quantity)*float(book.book.cost)
+            price = f"{price:.2f}"
+            prices.append(price)
+        
+        for book in books:
+            orderItem = OrderItem.objects.add_order_item(order=order, book=book.book, quantity=book.quantity)
+            orderItem.save()
 
-    for book in books:
-        book.delete()
+        for book in books:
+            book.delete()
 
-    total_cost = order.total
+        total_cost = order.total
 
-    tax = order.total * Decimal(0.1)
-    total = order.total + Decimal(5) + tax
-    tax = round(tax, 2)
-    total = round(total, 2)
-    order.total = total
-    order.save()
+        tax = order.total * Decimal(0.1)
+        total = order.total + Decimal(5) + tax
+        tax = round(tax, 2)
+        total = round(total, 2)
+        order.total = total
+        order.save()
 
-    context = {
-        'cartCount': getCartCount(request),
-        'books_in_cart': zip(books, prices),
-        'total_cost': total_cost,
-        'tax': tax,
-        'total': total,
-        'completed_orders': completed_orders,
-    }
+        context = {
+            'cartCount': getCartCount(request),
+            'books_in_cart': zip(books, prices),
+            'total_cost': total_cost,
+            'tax': tax,
+            'total': total,
+            'completed_orders': completed_orders,
+        }
     
     if request.method == "POST":
         if request.POST.get("search_button"):
@@ -1031,7 +1036,11 @@ def orderConfirmation(request):
             return redirect('search')
 
         if request.POST.get("reorder_button"):
-            pass
+            err = reorder_items(request)
+            if err == "success":
+                return redirect('cart')
+            else:
+                return redirect('cart')
     else:
         return render(request, 'bookstore/orderConfirmation.html', context)
 
@@ -1050,12 +1059,47 @@ def order_history(request):
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
             return redirect('search')
+
+        if request.POST.get("reorder_button"):
+            err = reorder_items(request)
+            if err == "success":
+                context = get_context()
+                context['success_flag'] = True
+                return render(request, 'bookstore/orderHistory.html', context)
+            else:
+                print("enters")
+                context = get_context()
+                context['err_message'] = err
+                context['err_flag'] = True
+                return render(request, 'bookstore/orderHistory.html', context)
     else:
         return render(request, 'bookstore/orderHistory.html', context)
 
 
-def admin_home(request):
-    return render(request, 'bookstore/admin-home.html')
+def reorder_items(request):
+    order_id = request.POST['reorder_button']
+    prev_order = Order.objects.filter(id=order_id)[0]
+
+    order_items = OrderItem.objects.filter(order=prev_order)
+
+    for o in CartItem.objects.filter(user=request.user): 
+        book = Book.objects.filter(isbn=o.book.isbn)[0]
+        book.stock += o.quantity
+        book.save()
+        o.delete()
+    
+    all_books_available = True
+    message = "Available books have been added to your cart. The following books are not available in the quantity you ordered before\n"
+    for order_item in order_items:
+        err = add_to_cart(request, order_item.book.isbn, order_item.quantity)
+        if err == "out_of_stock":
+            all_books_available = False
+            message += f"* {order_item.book.title}\n"
+
+    if all_books_available:
+        return "success"
+    else:
+        return message
 
 def save_search(request, query="", is_cat=False):
     search = Search.objects.filter(user=request.user)[0]

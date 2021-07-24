@@ -43,7 +43,7 @@
               <a class="nav-link" href="/search.html">Advanced Search</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i><span class="fa-layers-text fa-inverse cart-value">{{ cartCount }}</span></a>
+              <a class="nav-link" href="/cart.html"><i class="fas fa-shopping-cart"></i><span class="fa-layers-text fa-inverse cart-value"> {{ cartCount }}</span></a>
             </li>
 
             {% if not request.user.is_authenticated %}
@@ -70,7 +70,7 @@
               {% else %}
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                 <li><a class="dropdown-item" href="/editprofile.html">Edit Profile</a></li>
-                <li><a class="dropdown-item" href="orderHistory.html">Order History</a></li>
+                <li><a class="dropdown-item" href="/orderHistory.html">Order History</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
