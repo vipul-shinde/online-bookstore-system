@@ -593,8 +593,6 @@ def cart(request):
 
 
 def shipping(request):
-    orig_user = deepcopy(request.user)
-
     order = Order.objects.filter(user=request.user, status="Incomplete")
     if len(order) == 0:
         books = CartItem.objects.filter(user=request.user)
@@ -746,7 +744,164 @@ def shipping(request):
         return render(request, 'bookstore/shipping.html', context)
 
 def payment(request):
-    return render(request, 'bookstore/payment.html')
+    order = Order.objects.filter(user=request.user, status="Incomplete")[0]
+
+    def get_context():
+        order = Order.objects.filter(user=request.user, status="Incomplete")[0]
+        books = CartItem.objects.filter(user=request.user)
+        prices = []
+        for book in books:
+            price = int(book.quantity)*float(book.book.cost)
+            price = f"{price:.2f}"
+            prices.append(price)
+        
+        total_cost = order.total
+        discount = Decimal(int(order.promotion.percentage))*order.orig_total / Decimal(100)
+        discount = f"{discount:.2f}"
+
+        payment_cards = []
+        if request.user.card_four1 != "":
+            payment_cards.append(request.user.card_four1)
+        if request.user.card_four2 != "":
+            payment_cards.append(request.user.card_four2)
+        if request.user.card_four3 != "":
+            payment_cards.append(request.user.card_four3)
+
+        context = {
+            'cartCount': getCartCount(request),
+            'books_in_cart': zip(books, prices),
+            'total_cost': total_cost,
+            'promo_code_name': order.promotion.code,
+            'promo_code_discount': discount,
+            'payment_cards': payment_cards,
+        }
+        return context
+    context = get_context()
+
+    if request.method == "POST":
+        if request.POST.get("search_button"):
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
+
+        if request.POST.get("promo_remove_button"):
+            order.promotion = Promotion(code="SYSTEM", start_date=datetime.date.today(), end_date=datetime.date.today(), percentage=0)
+            order.total = order.orig_total
+            order.save()
+            context = get_context()
+            return render(request, 'bookstore/payment.html', context)
+
+        if request.POST.get("promo_button"):
+            if request.POST["promo_code"] == "":
+                context['promo_none_flag'] = True
+                return render(request, 'bookstore/payment.html', context)
+
+            promo = Promotion.objects.filter(code=request.POST['promo_code'])
+            if len(promo) == 0:
+                context['promo_invalid_flag'] = True
+                return render(request, 'bookstore/payment.html', context)
+
+            completed_orders = Order.objects.filter(user=request.user, status="Confirmed")
+            orderItems = []
+            for c_orders in completed_orders:
+                orderItems.append(OrderItem.objects.filter(order=c_orders)[0])
+            for orderItem in orderItems:
+                used_promo = orderItem.order.promotion.code
+                if used_promo == request.POST['promo_code']:
+                    context['promo_flag'] = True
+                    return render(request, 'bookstore/payment.html', context)
+
+            promo = promo[0]
+            if promo.start_date > datetime.date.today():
+                context['promo_start_flag'] = True
+                return render(request, 'bookstore/payment.html', context)
+            if promo.end_date < datetime.date.today():
+                context['promo_end_flag'] = True
+                return render(request, 'bookstore/payment.html', context)
+            
+            if order.promotion.code != "SYSTEM":
+                order.total = order.orig_total
+            order.promotion = promo
+            order.total = order.total * Decimal(100-int(promo.percentage)) / Decimal(100)
+            order.total = round(order.total, 2)
+            order.save()
+
+            context = get_context()
+            return render(request, 'bookstore/payment.html', context)
+        
+        card_option = request.POST['card_option']
+        if card_option == "Select":
+            card_name = request.POST['card_name']
+            card_num = request.POST['card_num']
+            card_exp = f"{request.POST.get('card_month')}/{request.POST.get('card_year')}"
+            card_cvv = request.POST['card_cvv']
+            card_four = request.POST['card_num'][-4:]
+
+            if card_exp == "None/None":
+                context['card_missing_field_flag'] = True
+                return render(request, 'bookstore/payment.html', context)
+
+            user = request.user
+            if "save_card" in request.POST.getlist("checks[]"):
+                if user.card_count == 3:
+                    context['card_overflow_flag'] = True
+                    return render(request, 'bookstore/payment.html', context)
+                
+                user.card_count += 1
+                if user.card_four1 == "":
+                    user.card_name1 = card_name
+                    user.card_num1 = card_num
+                    user.card_exp1 = card_exp
+                    user.card_cvv1 = card_cvv
+                    user.card_four1 = card_four
+                elif user.card_four2 == "":
+                    user.card_name2 = card_name
+                    user.card_num2 = card_num
+                    user.card_exp2 = card_exp
+                    user.card_cvv2 = card_cvv
+                    user.card_four2 = card_four
+                elif user.card_four3 == "":
+                    user.card_name3 = card_name
+                    user.card_num3 = card_num
+                    user.card_exp3 = card_exp
+                    user.card_cvv3 = card_cvv
+                    user.card_four3 = card_four
+                user.save()
+        else:
+            if request.user.card_four1 == card_option:
+                card_name = request.user.card_name1
+                card_num = request.user.card_num1
+                card_exp = request.user.card_exp1
+                card_cvv = request.user.card_cvv1
+                card_four = request.user.card_four1
+            elif request.user.card_four2 == card_option:
+                card_name = request.user.card_name2
+                card_num = request.user.card_num2
+                card_exp = request.user.card_exp2
+                card_cvv = request.user.card_cvv2
+                card_four = request.user.card_four2
+            elif request.user.card_four3 == card_option:
+                card_name = request.user.card_name3
+                card_num = request.user.card_num3
+                card_exp = request.user.card_exp3
+                card_cvv = request.user.card_cvv3
+                card_four = request.user.card_four3
+
+        order.card_name = card_name
+        order.card_num = card_num
+        order.card_exp = card_exp
+        order.card_cvv = card_cvv
+        order.card_four = card_four
+        order.save()
+        
+        return redirect('finalplaceorder')
+        
+    else:
+        return render(request, 'bookstore/payment.html', context)
+
+
+def finalplaceorder(request):
+    return render(request, 'bookstore/finalplaceorder.html')
+
 
 def admin_home(request):
     return render(request, 'bookstore/admin-home.html')

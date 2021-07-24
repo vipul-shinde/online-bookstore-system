@@ -116,11 +116,12 @@
                 <h6 class="my-0">Promo code</h6>
                 <small>{{ promo_code_name }}</small>
               </div>
-            <div><span class="text-success">-${{ promo_code_discount }}</span>
+            <div>
                 <form method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn-close" aria-label="Close" name="promo_remove_button" value="promo_remove_button"></button>
                 </form>
+                <span class="text-success">-${{ promo_code_discount }}</span>
             </div>
               {% endif %}
             </li>

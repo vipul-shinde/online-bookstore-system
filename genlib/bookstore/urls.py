@@ -18,12 +18,13 @@ urlpatterns = [
     path('search.html', views.search, name='search'),
     path('browse-books.html', views.browse_books, name='browse_books'),
     path('cart.html', views.cart, name='cart'),
-    path('admin-home.html', views.admin_home, name='admin_home'),
     path('orderHistory.html', views.order_history, name='order_history'),
 
+    path('admin-home.html', views.admin_home, name='admin_home'),
     path('add_to_cart', views.add_to_cart, name='add_to_cart'),
     path('shipping.html', views.shipping, name='shipping'),
     path('payment.html', views.payment, name='payment'),
+    path('finalplaceorder.html', views.finalplaceorder, name='finalplaceorder'),
 
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
