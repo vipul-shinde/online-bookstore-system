@@ -945,21 +945,19 @@ def finalplaceorder(request):
         discount = Decimal(int(order.promotion.percentage))*order.orig_total / Decimal(100)
         discount = f"{discount:.2f}"
 
-        payment_cards = []
-        if request.user.card_four1 != "":
-            payment_cards.append(request.user.card_four1)
-        if request.user.card_four2 != "":
-            payment_cards.append(request.user.card_four2)
-        if request.user.card_four3 != "":
-            payment_cards.append(request.user.card_four3)
-
+        tax = order.total * Decimal(0.1)
+        total = order.total + Decimal(5) + tax
+        tax = round(tax, 2)
+        total = round(total, 2)
         context = {
             'cartCount': getCartCount(request),
             'books_in_cart': zip(books, prices),
             'total_cost': total_cost,
             'promo_code_name': order.promotion.code,
             'promo_code_discount': discount,
-            'payment_cards': payment_cards,
+            'order': order,
+            'tax': tax,
+            'total': total,
         }
         return context
     context = get_context()
@@ -968,7 +966,31 @@ def finalplaceorder(request):
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
             return redirect('search')
-    return render(request, 'bookstore/finalplaceorder.html')
+
+        if request.POST.get('edit_payment'):
+            return redirect('payment')
+
+        if request.POST.get('save_changes'):
+            order.street = request.POST['userStreet']
+            order.city = request.POST['userCity']
+            order.state = request.POST['userState']
+            order.zip_code = request.POST['userZip_code']
+            order.county = request.POST['userCounty']
+            order.country = request.POST['userCountry']
+            order.save()
+
+            context = get_context()
+            return render(request, 'bookstore/finalplaceorder.html', context)
+
+        return redirect('orderConfirmation')
+
+    else:
+        return render(request, 'bookstore/finalplaceorder.html', context)
+
+
+def orderConfirmation(request):
+    return render(request, 'bookstore/orderConfirmation.html')
+
 
 
 def admin_home(request):

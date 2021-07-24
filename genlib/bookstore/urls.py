@@ -25,6 +25,7 @@ urlpatterns = [
     path('shipping.html', views.shipping, name='shipping'),
     path('payment.html', views.payment, name='payment'),
     path('finalplaceorder.html', views.finalplaceorder, name='finalplaceorder'),
+    path('orderConfirmation.html', views.orderConfirmation, name='orderConfirmation'),
 
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
