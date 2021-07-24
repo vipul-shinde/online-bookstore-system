@@ -706,94 +706,42 @@ def shipping(request):
 
             context = get_context()
             return render(request, 'bookstore/shipping.html', context)
+    
+        first_name = request.POST['userFirst_name']
+        last_name = request.POST['userLast_name']
+        phone = request.POST['userPhone']
+        street = request.POST['userStreet']
+        city = request.POST['userCity']
+        state = request.POST['userState']
+        zip_code = request.POST['userZip']
+        county = request.POST['userCounty']
+        country = request.POST['userCountry']
 
-        # if can_apply_promo:
-        #     try:
-        #         order = Order.objects.get(user=request.user)
-        #     except:
-        #         total = get_context()['total_cost']
-        #         total = total * (100 - int(Promotion.objects.get(code=request.POST['promo_code']).percentage))
-        #         order = Order.objects.create_order(
-        #             user=request.user,
-        #             total=total,
-        #             date=datetime.date.today(),
-        #             time=datetime.datetime.now().strftime("%H:%M:%S"),
-        #             first_name="",
-        #             last_name="",
-        #             phone="",
-        #             street="",
-        #             city="",
-        #             state="",
-        #             zip_code="",
-        #             county="",
-        #             country="",
-        #             card_name="",
-        #             card_num="",
-        #             card_exp="",
-        #             card_cvv="",
-        #             card_four="",
-        #         )
-            
-        #         order.total = total
-        #         order.save()
+        if "save_address" in request.POST.getlist("checks[]"):
+            user = request.user
+            user.first_name = first_name
+            user.last_name = last_name
+            user.phone = phone
+            user.street = street
+            user.city = city
+            user.state = state
+            user.zip_code = zip_code
+            user.county = county
+            user.country = country
+            user.save()
 
-        #     context = get_context()
-        #     return render(request, 'bookstore/shipping.html', context)
-        # else:
-        #     # try:
-        #     #     order = Order.objects.get(user=request.user)
-        #     #     order.delete()
-        #     # except:
-        #     #     pass
-            
-        #     # first_name = request.POST['userFirst_name']
-        #     # last_name = request.POST['userLast_name']
-        #     # phone = request.POST['userPhone']
-        #     # street = request.POST['userStreet']
-        #     # city = request.POST['userCity']
-        #     # state = request.POST['userState']
-        #     # county = request.POST['userCounty']
-        #     # country = request.POST['userCountry']
-        #     # zip_code = request.POST['userZip']
+        order.first_name = first_name
+        order.last_name = last_name
+        order.phone = phone
+        order.street = street
+        order.city = city
+        order.state = state
+        order.zip_code = zip_code
+        order.county = county
+        order.country = country
+        order.save()
 
-        #     # if "save_address" in request.POST.getlist("checks[]"):
-        #     #     user = request.user
-        #     #     user.first_name = first_name
-        #     #     user.last_name = last_name
-        #     #     user.phone = phone
-        #     #     user.street = street
-        #     #     user.city = city
-        #     #     user.state = state
-        #     #     user.county = county
-        #     #     user.country = country
-        #     #     user.zip_code = zip_code
-        #     #     user.save()
-
-        #     # order = Order.objects.create_order(
-        #     #     user=request.user,
-        #     #     total=total,
-        #     #     date=datetime.date.today(),
-        #     #     time=datetime.datetime.now().strftime("%H:%M:%S"),
-        #     #     first_name=first_name,
-        #     #     last_name=last_name,
-        #     #     phone=phone,
-        #     #     street=street,
-        #     #     city=city,
-        #     #     state=state,
-        #     #     zip_code=zip_code,
-        #     #     county=county,
-        #     #     country=country,
-        #     #     card_name="",
-        #     #     card_num="",
-        #     #     card_exp="",
-        #     #     card_cvv="",
-        #     #     card_four="",
-        #     # )
-        #     # order.save()
-
-        #     context = get_context()
-        #     return render(request, 'bookstore/payment.html', context)
-        pass
+        return redirect('payment')
     else:
         return render(request, 'bookstore/shipping.html', context)
 

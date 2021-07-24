@@ -116,9 +116,12 @@
                 <h6 class="my-0">Promo code</h6>
                 <small>{{ promo_code_name }}</small>
               </div>
-              <span class="text-success">-${{ promo_code_discount }}</span>
-              <form method="POST">{% csrf_token %}
-              <button type="submit" class="btn-close" aria-label="Close" name="promo_remove_button" value="promo_remove_button"></button></form>
+            <div><span class="text-success">-${{ promo_code_discount }}</span>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-close" aria-label="Close" name="promo_remove_button" value="promo_remove_button"></button>
+                </form>
+            </div>
               {% endif %}
             </li>
             <li class="list-group-item d-flex justify-content-between">
