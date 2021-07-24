@@ -717,6 +717,26 @@ def shipping(request):
 
         if "save_address" in request.POST.getlist("checks[]"):
             user = request.user
+            mail_message = ""
+            if user.first_name != first_name:
+                mail_message += "* Your first name has been updated\n"
+            if user.last_name != last_name:
+                mail_message += "* Your last name has been updated\n"
+            if user.phone != phone:
+                mail_message += "* Your phone has been updated\n"
+            if user.street != street:
+                mail_message += "* Your steet has been updated\n"
+            if user.city != city:
+                mail_message += "* Your city has been updated\n"
+            if user.state != state:
+                mail_message += "* Your state has been updated\n"
+            if user.zip_code != zip_code:
+                mail_message += "* Your zip code has been updated\n"
+            if user.county != county:
+                mail_message += "* Your county has been updated"
+            if user.country != country:
+                mail_message += "* Your country has been updated"
+
             user.first_name = first_name
             user.last_name = last_name
             user.phone = phone
@@ -727,6 +747,11 @@ def shipping(request):
             user.county = county
             user.country = country
             user.save()
+
+            mail_subject = "Changes made to your genlib account"
+            if mail_message != "":
+                EMAIL = EmailMessage(mail_subject, mail_message, to=[request.user.email])
+                EMAIL.send()
 
         order.first_name = first_name
         order.last_name = last_name
@@ -866,6 +891,11 @@ def payment(request):
                     user.card_cvv3 = card_cvv
                     user.card_four3 = card_four
                 user.save()
+
+                mail_subject = "Changes made to your genlib account"
+                mail_message = f"Card ending in {card_four} has been added to your account"
+                EMAIL = EmailMessage(mail_subject, mail_message, to=[request.user.email])
+                EMAIL.send()
         else:
             if request.user.card_four1 == card_option:
                 card_name = request.user.card_name1
@@ -900,6 +930,44 @@ def payment(request):
 
 
 def finalplaceorder(request):
+    order = Order.objects.filter(user=request.user, status="Incomplete")[0]
+
+    def get_context():
+        order = Order.objects.filter(user=request.user, status="Incomplete")[0]
+        books = CartItem.objects.filter(user=request.user)
+        prices = []
+        for book in books:
+            price = int(book.quantity)*float(book.book.cost)
+            price = f"{price:.2f}"
+            prices.append(price)
+        
+        total_cost = order.total
+        discount = Decimal(int(order.promotion.percentage))*order.orig_total / Decimal(100)
+        discount = f"{discount:.2f}"
+
+        payment_cards = []
+        if request.user.card_four1 != "":
+            payment_cards.append(request.user.card_four1)
+        if request.user.card_four2 != "":
+            payment_cards.append(request.user.card_four2)
+        if request.user.card_four3 != "":
+            payment_cards.append(request.user.card_four3)
+
+        context = {
+            'cartCount': getCartCount(request),
+            'books_in_cart': zip(books, prices),
+            'total_cost': total_cost,
+            'promo_code_name': order.promotion.code,
+            'promo_code_discount': discount,
+            'payment_cards': payment_cards,
+        }
+        return context
+    context = get_context()
+
+    if request.method == "POST":
+        if request.POST.get("search_button"):
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
     return render(request, 'bookstore/finalplaceorder.html')
 
 
