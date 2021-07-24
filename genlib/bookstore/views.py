@@ -631,6 +631,8 @@ def shipping(request):
             card_four="",
         )
         order.save()
+    else:
+        order = order[0]
 
     def get_context():
         order = Order.objects.filter(user=request.user, status="Incomplete")[0]
@@ -660,12 +662,12 @@ def shipping(request):
             save_search(request, query=request.POST['search'])
             return redirect('search')
 
-        # if request.POST.get("promo_remove_button"):
-        #     order.promo = Promotion(code="SYSTEM", start_date=datetime.date.today(), end_date=datetime.date.today(), percentage=0)
-        #     order.total = order.orig_total
-        #     order.save()
-        #     context = get_context()
-        #     return render(request, 'bookstore/shipping.html', context)
+        if request.POST.get("promo_remove_button"):
+            order.promotion = Promotion(code="SYSTEM", start_date=datetime.date.today(), end_date=datetime.date.today(), percentage=0)
+            order.total = order.orig_total
+            order.save()
+            context = get_context()
+            return render(request, 'bookstore/shipping.html', context)
 
         if request.POST.get("promo_button"):
             if request.POST["promo_code"] == "":
@@ -695,7 +697,6 @@ def shipping(request):
                 context['promo_end_flag'] = True
                 return render(request, 'bookstore/shipping.html', context)
             
-            order = order[0]
             if order.promotion.code != "SYSTEM":
                 order.total = order.orig_total
             order.promotion = promo
