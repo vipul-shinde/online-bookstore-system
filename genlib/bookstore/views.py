@@ -989,15 +989,73 @@ def finalplaceorder(request):
 
 
 def orderConfirmation(request):
-    return render(request, 'bookstore/orderConfirmation.html')
+    completed_orders = Order.objects.filter(user=request.user, status="Confirmed").order_by("-id")
+    order = Order.objects.filter(user=request.user, status="Incomplete")[0]
+    order.status = "Confirmed"
 
+    books = CartItem.objects.filter(user=request.user)
+    prices = []
+    for book in books:
+        price = int(book.quantity)*float(book.book.cost)
+        price = f"{price:.2f}"
+        prices.append(price)
+    
+    for book in books:
+        orderItem = OrderItem.objects.add_order_item(order=order, book=book.book, quantity=book.quantity)
+        orderItem.save()
+
+    for book in books:
+        book.delete()
+
+    total_cost = order.total
+
+    tax = order.total * Decimal(0.1)
+    total = order.total + Decimal(5) + tax
+    tax = round(tax, 2)
+    total = round(total, 2)
+    order.total = total
+    order.save()
+
+    context = {
+        'cartCount': getCartCount(request),
+        'books_in_cart': zip(books, prices),
+        'total_cost': total_cost,
+        'tax': tax,
+        'total': total,
+        'completed_orders': completed_orders,
+    }
+    
+    if request.method == "POST":
+        if request.POST.get("search_button"):
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
+
+        if request.POST.get("reorder_button"):
+            pass
+    else:
+        return render(request, 'bookstore/orderConfirmation.html', context)
+
+
+def order_history(request):
+    def get_context():
+        completed_orders = Order.objects.filter(user=request.user, status="Confirmed").order_by("-id")
+        context = {
+            'completed_orders': completed_orders,
+            'cartCount': getCartCount(request),
+        }
+        return context
+    context = get_context()
+
+    if request.method == "POST":
+        if request.POST.get("search_button"):
+            save_search(request, query=request.POST['search'])
+            return redirect('search')
+    else:
+        return render(request, 'bookstore/orderHistory.html', context)
 
 
 def admin_home(request):
     return render(request, 'bookstore/admin-home.html')
-
-def order_history(request):
-    return render(request, 'bookstore/orderHistory.html')
 
 def save_search(request, query="", is_cat=False):
     search = Search.objects.filter(user=request.user)[0]
