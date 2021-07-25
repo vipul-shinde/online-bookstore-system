@@ -1164,12 +1164,11 @@ def search(request):
                 if query.query == "All":
                     books = Book.objects.all()
                 else:
-                    print(query.query)
                     books = Book.objects.filter(category=query.query)
                 query.query = ""
                 context = {
                     'cartCount': getCartCount(request),
-                    'search_query': query,
+                    'search_query': query.query,
                     'books': books,
                     'no_book_flag': False,
                 }
@@ -1182,16 +1181,20 @@ def search(request):
                 books = Book.objects.all().order_by('title')
             else:
                 books = Book.objects.filter(title=query)
-
+        
         if category != "Select":
-            if search_by == "Title":
+            if search_by == "Select":
+                books = Book.objects.filter(category=category)
+            elif search_by == "Title":
                 books = Book.objects.filter(category=category, title=query)
             elif search_by == "Author":
                 books = Book.objects.filter(category=category, author=query)
             elif search_by == "Publisher":
                 books = Book.objects.filter(category=category, publisher=query)
         else:
-            if search_by == "Title":
+            if search_by == "Select":
+                books = Book.objects.all()
+            elif search_by == "Title":
                 books = Book.objects.filter(title=query)
             elif search_by == "Author":
                 books = Book.objects.filter(author=query)
@@ -1242,8 +1245,6 @@ def search(request):
                 return render(request, 'bookstore/search.html', context)
 
         if request.POST.get("search_button2"):
-            # save_search(request, query=request.POST['search_query'])
-            print(f"={request.POST['search_by_query']}=")
             context = get_context(query=request.POST['search_query'],
                                   search_by=request.POST['search_by_query'],
                                   category=request.POST['category_query'],
