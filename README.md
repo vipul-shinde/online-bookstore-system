@@ -6,7 +6,7 @@ email = kushaj123456@gmail.com
 email_password = kushaj12345678
 
 # To login to admin goto localhost:8000/admin
-admin_password = kushaj12345678
+admin_password = 12345678
 admin_email = kushaj@gmail.com
 ```
 

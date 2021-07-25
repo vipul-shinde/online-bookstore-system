@@ -1180,6 +1180,24 @@ def search(request):
                 books = Book.objects.filter(category=category, author=query)
             elif search_by == "Publisher":
                 books = Book.objects.filter(category=category, publisher=query)
+        else:
+            if search_by == "Title":
+                books = Book.objects.filter(title=query)
+            elif search_by == "Author":
+                books = Book.objects.filter(author=query)
+            elif search_by == "Publisher":
+                books = Book.objects.filter(publisher=query)
+
+        if filter_by == "Price: High to low":
+            books = books.order_by('-cost')
+        elif filter_by == "Price: Low to High":
+            books = books.order_by('cost')
+        elif filter_by == "Oldest":
+            books = books.order_by('publication_year')
+        elif filter_by == "Newest":
+            books = books.order_by('-publication_year')
+        elif filter_by == "Top rated":
+            books = books.order_by('-rating')
 
         if len(books) == 0:
             no_book_flag = True
@@ -1215,6 +1233,7 @@ def search(request):
 
         if request.POST.get("search_button2"):
             # save_search(request, query=request.POST['search_query'])
+            print(f"={request.POST['search_by_query']}=")
             context = get_context(query=request.POST['search_query'],
                                   search_by=request.POST['search_by_query'],
                                   category=request.POST['category_query'],
