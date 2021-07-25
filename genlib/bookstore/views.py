@@ -46,6 +46,10 @@ def index(request):
             save_search(request, query=request.POST['search'])
             return redirect('search')
 
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
+            return redirect('search')
+
         if request.POST.get("add_to_cart"):
             err = add_to_cart(request, request.POST['add_to_cart'], 1)
             if err == "redirect":
@@ -255,6 +259,10 @@ def book_detail(request, title):
             save_search(request, query=request.POST['search'])
             return redirect('search')
 
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
+            return redirect('search')
+
         if request.POST.get("add_to_cart"):
             err = add_to_cart(request, book.isbn, 1)
             if err == "redirect":
@@ -287,6 +295,10 @@ def edit_profile(request):
     if request.method == "POST":
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
+            return redirect('search')
+
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
             return redirect('search')
 
         if request.POST['something'] == "not_working":
@@ -498,6 +510,10 @@ def browse_books(request):
             save_search(request, query=request.POST['search'])
             return redirect('search')
 
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
+            return redirect('search')
+
         if request.POST.get("add_to_cart"):
             err = add_to_cart(request, request.POST['add_to_cart'], 1)
             if err == "redirect":
@@ -533,6 +549,10 @@ def cart(request):
     if request.method == "POST":
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
+            return redirect('search')
+
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
             return redirect('search')
 
         if request.POST.get("cross_button"):
@@ -658,6 +678,10 @@ def shipping(request):
     if request.method == "POST":
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
+            return redirect('search')
+
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
             return redirect('search')
 
         if request.POST.get("promo_remove_button"):
@@ -806,6 +830,10 @@ def payment(request):
     if request.method == "POST":
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
+            return redirect('search')
+
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
             return redirect('search')
 
         if request.POST.get("promo_remove_button"):
@@ -967,6 +995,10 @@ def finalplaceorder(request):
             save_search(request, query=request.POST['search'])
             return redirect('search')
 
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
+            return redirect('search')
+
         if request.POST.get('edit_payment'):
             return redirect('payment')
 
@@ -1035,6 +1067,10 @@ def orderConfirmation(request):
             save_search(request, query=request.POST['search'])
             return redirect('search')
 
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
+            return redirect('search')
+
         if request.POST.get("reorder_button"):
             err = reorder_items(request)
             if err == "success":
@@ -1058,6 +1094,10 @@ def order_history(request):
     if request.method == "POST":
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
+            return redirect('search')
+
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
             return redirect('search')
 
         if request.POST.get("reorder_button"):
@@ -1109,28 +1149,78 @@ def save_search(request, query="", is_cat=False):
     return
 
 def search_function(query, operation=None):
-    books = Book.objects.all()
-    return books
+    if operation is None:
+        if query == "":
+            books = Book.objects.all().order_by('title')
+            return books
+        book = Book.objects.filter(title=query)
+        if len(book) == 0:
+            return None
+        else:
+            return book
+    
 
 def search(request):
-    def get_context():
-        search = Search.objects.filter(user=request.user)[0]
-        if search.is_cat:
-            books = search_function(search.query, "category")
-        else:
-            books = search_function(search.query)
+    def get_context(query="", search_by="Title", category="Select", filter_by="Select", redirect=True):
+        no_book_flag = False
+        if redirect:
+            query = Search.objects.filter(user=request.user)[0]
+            query = query.query
 
+        if search_by == "Title" and category == "Select" and filter_by == "Select":
+            if query == "":
+                books = Book.objects.all().order_by('title')
+            else:
+                books = Book.objects.filter(title=query)
+
+        if category != "Select":
+            if search_by == "Title":
+                books = Book.objects.filter(category=category, title=query)
+            elif search_by == "Author":
+                books = Book.objects.filter(category=category, author=query)
+            elif search_by == "Publisher":
+                books = Book.objects.filter(category=category, publisher=query)
+
+        if len(books) == 0:
+            no_book_flag = True
         context = {
             'cartCount': getCartCount(request),
-            'search_query': search.query,
-            'books': books
+            'search_query': query,
+            'books': books,
+            'no_book_flag': no_book_flag,
         }
+
         return context
     context = get_context()
 
     if request.method == "POST":
         if request.POST.get("search_button1"):
             save_search(request, query=request.POST['search'])
+            context = get_context()
+            return render(request, 'bookstore/search.html', context)
+
+        if request.POST.get("advanced_search_button"):
+            save_search(request, query="")
             return redirect('search')
+
+        if request.POST.get("add_to_cart"):
+            err = add_to_cart(request, request.POST['add_to_cart'], 1)
+            if err == "redirect":
+                return redirect('login')
+            elif err == "out_of_stock":
+                context['out_of_stock_flag'] = True
+                return render(request, 'bookstore/search.html', context)
+            else:
+                return render(request, 'bookstore/search.html', context)
+
+        if request.POST.get("search_button2"):
+            # save_search(request, query=request.POST['search_query'])
+            context = get_context(query=request.POST['search_query'],
+                                  search_by=request.POST['search_by_query'],
+                                  category=request.POST['category_query'],
+                                  filter_by=request.POST['filter_by_query'],
+                                  redirect=False)
+            return render(request, 'bookstore/search.html', context)
+
     else:
         return render(request, 'bookstore/search.html', context)
