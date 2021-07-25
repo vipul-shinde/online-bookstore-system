@@ -1180,26 +1180,60 @@ def search(request):
             if query == "":
                 books = Book.objects.all().order_by('title')
             else:
-                books = Book.objects.filter(title=query)
+                books = []
+                xs = Book.objects.all()
+                for x in xs:
+                    if x.title.lower() == query.lower():
+                        books.append(x)
         else:
             if category != "Select":
                 if search_by == "Select":
                     books = Book.objects.filter(category=category)
                 elif search_by == "Title":
-                    books = Book.objects.filter(category=category, title=query)
+                    books = []
+                    xs = Book.objects.filter(category=category)
+                    for x in xs:
+                        if x.title.lower() == query.lower():
+                            books.append(x)
+                    # books = Book.objects.filter(category=category, title=query)
                 elif search_by == "Author":
-                    books = Book.objects.filter(category=category, author=query)
+                    books = []
+                    xs = Book.objects.filter(category=category)
+                    for x in xs:
+                        if x.author.lower() == query.lower():
+                            books.append(x)
+                    # books = Book.objects.filter(category=category, author=query)
                 elif search_by == "Publisher":
-                    books = Book.objects.filter(category=category, publisher=query)
+                    books = []
+                    xs = Book.objects.filter(category=category)
+                    for x in xs:
+                        if x.publisher.lower() == query.lower():
+                            books.append(x)
+                    # books = Book.objects.filter(category=category, publisher=query)
             else:
                 if search_by == "Select":
                     books = Book.objects.all()
                 elif search_by == "Title":
-                    books = Book.objects.filter(title=query)
+                    books = []
+                    xs = Book.objects.all()
+                    for x in xs:
+                        if x.title.lower() == query.lower():
+                            books.append(x)
+                    # books = Book.objects.filter(title=query)
                 elif search_by == "Author":
-                    books = Book.objects.filter(author=query)
+                    books = []
+                    xs = Book.objects.all()
+                    for x in xs:
+                        if x.author.lower() == query.lower():
+                            books.append(x)
+                    # books = Book.objects.filter(author=query)
                 elif search_by == "Publisher":
-                    books = Book.objects.filter(publisher=query)
+                    books = []
+                    xs = Book.objects.all()
+                    for x in xs:
+                        if x.publisher.lower() == query.lower():
+                            books.append(x)
+                    # books = Book.objects.filter(publisher=query)
 
             if filter_by == "Price: High to low":
                 books = books.order_by('-cost')
