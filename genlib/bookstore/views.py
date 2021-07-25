@@ -30,17 +30,23 @@ def index(request):
 
     if request.method == "POST":
         if request.POST.get("espionage_cat"):
-            return search_function(request, "espionage", True)
+            save_search(request, "Espionage", True)
+            return redirect('search')
         if request.POST.get("contemporary_cat"):
-            return search_function(request, "contemporary", True)
+            save_search(request, "Contemporary Women", True)
+            return redirect('search')
         if request.POST.get("classics_cat"):
-            return search_function(request, "classics", True)
+            save_search(request, "Classics", True)
+            return redirect('search')
         if request.POST.get("literary_cat"):
-            return search_function(request, "literary", True)
+            save_search(request, "Literary", True)
+            return redirect('search')
         if request.POST.get("horror_cat"):
-            return search_function(request, "horror", True)
+            save_search(request, "Horror", True)
+            return redirect('search')
         if request.POST.get("all_cat"):
-            return search_function(request, "all", True)
+            save_search(request, "All", True)
+            return redirect('search')
         
         if request.POST.get("search_button"):
             save_search(request, query=request.POST['search'])
@@ -1147,25 +1153,29 @@ def save_search(request, query="", is_cat=False):
     search.is_cat = is_cat
     search.save()
     return
-
-def search_function(query, operation=None):
-    if operation is None:
-        if query == "":
-            books = Book.objects.all().order_by('title')
-            return books
-        book = Book.objects.filter(title=query)
-        if len(book) == 0:
-            return None
-        else:
-            return book
     
-
+@login_required
 def search(request):
     def get_context(query="", search_by="Title", category="Select", filter_by="Select", redirect=True):
         no_book_flag = False
         if redirect:
             query = Search.objects.filter(user=request.user)[0]
-            query = query.query
+            if query.is_cat:
+                if query.query == "All":
+                    books = Book.objects.all()
+                else:
+                    print(query.query)
+                    books = Book.objects.filter(category=query.query)
+                query.query = ""
+                context = {
+                    'cartCount': getCartCount(request),
+                    'search_query': query,
+                    'books': books,
+                    'no_book_flag': False,
+                }
+                return context
+            else:
+                query = query.query
 
         if search_by == "Title" and category == "Select" and filter_by == "Select":
             if query == "":
