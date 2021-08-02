@@ -1167,7 +1167,7 @@ def save_search(request, query="", is_cat=False):
             search.is_cat = is_cat
             search.save()
     
-@login_required
+# @login_required
 def search(request):
     def get_context(query="", search_by="Title", category="Select", filter_by="Select", redirect=True):
         no_book_flag = False
