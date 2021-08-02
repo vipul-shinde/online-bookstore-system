@@ -1,39 +1,46 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import *
+from django.contrib.auth.models import Group
+
+from .models import Promotion, Book, User
+
+
+class BookAdmin(admin.ModelAdmin):
+    list_display = ("isbn", "category", "title", "stock", "cost")
 
 
 class UserAdminConfig(UserAdmin):
-    list_display = ("first_name", "last_name", "email", "is_staff", 
-                    "is_active", "is_suspended", "is_superuser", "password")
+    list_display = ("email", "first_name", "last_name", "is_staff",
+                    "is_active", "is_suspended")
 
     fieldsets = (
-        ("Account", {"fields": ("first_name", "last_name", "email", "password", "phone")}),
-        ("Address", {"fields": ("street", "city", "state", "zip_code", "county", "country")}),
-        ("Payment", {"fields": ("card_name", "card_num", "card_exp", "card_cvv", "card_four")}),
+        ("Personal Info", {"fields": ("first_name", "last_name", "password",
+                                      "phone")}),
+        ("Address", {"fields": ("street", "city", "state", "zip_code",
+                                "county", "country")}),
+        ("Payment card 1", {"fields": ("card_name1",)}),
+        ("Payment card 2", {"fields": ("card_name2",)}),
+        ("Payment card 3", {"fields": ("card_name3",)}),
         ("Permissions", {"fields": ("is_staff", "is_active", "is_suspended")}),
         ("Promotions", {"fields": ("receive_promotions",)}),
     )
 
     add_fieldsets = (
-        ("Account", {"fields": ("first_name", "last_name", "email", "password", "phone")}),
-        ("Address", {"fields": ("street", "city", "state", "zip_code", "county", "country")}),
-        ("Payment", {"fields": ("card_name", "card_num", "card_exp", "card_cvv", "card_four")}),
+        ("Personal Info", {"fields": ("first_name", "last_name", "email",
+                                      "password", "phone")}),
+        ("Address", {"fields": ("street", "city", "state", "zip_code",
+                                "county", "country")}),
+        ("Payment card 1", {"fields": ("card_name1", "card_num1", "card_exp1",
+                                       "card_cvv1", "card_four1")}),
+        ("Payment card 1", {"fields": ("card_name2", "card_num2", "card_exp2",
+                                       "card_cvv2", "card_four3")}),
+        ("Payment card 1", {"fields": ("card_name3", "card_num3", "card_exp3",
+                                       "card_cvv3", "card_four3")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "is_suspended")}),
-        ("Promotions", {"fields": ("receive_promotions")}),
+        ("Promotions", {"fields": ("receive_promotions",)}),
     )
 
     ordering = ("email",)
-
-
-class BookAdmin(admin.ModelAdmin):
-    list_display = ("isbn", "category", "title", "image_path",
-                    "edition", "publisher", "publication_year",
-                    "author", "stock", "cost", "rating")
-
-
-class CartItemAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "book", "quantity")
 
 
 class PromotionAdmin(admin.ModelAdmin):
@@ -46,30 +53,7 @@ class PromotionAdmin(admin.ModelAdmin):
         return False
 
 
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "date", "time", "total")
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-
-class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ("id", "order", "book", "quantity")
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-
-# Register your models here.
+admin.site.unregister(Group)
 admin.site.register(Book, BookAdmin)
 admin.site.register(User, UserAdminConfig)
-admin.site.register(CartItem, CartItemAdmin)
 admin.site.register(Promotion, PromotionAdmin)
-admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderItem, OrderItemAdmin)

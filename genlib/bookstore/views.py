@@ -1148,18 +1148,34 @@ def reorder_items(request):
         return message
 
 def save_search(request, query="", is_cat=False):
-    search = Search.objects.filter(user=request.user)[0]
-    search.query = query
-    search.is_cat = is_cat
-    search.save()
-    return
+    if request.user.is_authenticated:
+        search = Search.objects.filter(user=request.user)[0]
+        search.query = query
+        search.is_cat = is_cat
+        search.save()
+    else:
+        search = Search.objects.filter(is_signedoff=True)
+        if len(search) == 0:
+            search = Search(user=None,
+                            query=query,
+                            is_cat=is_cat,
+                            is_signedoff=True)
+            search.save()
+        else:
+            search = search[0]
+            search.query = query
+            search.is_cat = is_cat
+            search.save()
     
 @login_required
 def search(request):
     def get_context(query="", search_by="Title", category="Select", filter_by="Select", redirect=True):
         no_book_flag = False
         if redirect:
-            query = Search.objects.filter(user=request.user)[0]
+            if request.user.is_authenticated:
+                query = Search.objects.filter(user=request.user)[0]
+            else:
+                query = Search.objects.filter(is_signedoff=True)[0]
             if query.is_cat:
                 if query.query == "All":
                     books = Book.objects.all()

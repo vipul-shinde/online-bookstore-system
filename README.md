@@ -25,6 +25,6 @@ cd genlib
 python manage.py runserver
 ```
 
-The server will be at "localhost:8000". Note the links to other HTML files will not work for now. I need to add those to the path. For now "index.html", "signup.html", "signup_confirmation.html" will only work.
+The server will be at "localhost:8000".
 
 Goto "localhost:8000/admin" and enter credentials to access admin page. Here you can check all the values stored in the database.

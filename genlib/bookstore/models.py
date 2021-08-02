@@ -291,6 +291,7 @@ class Search(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     query = models.CharField(max_length=50, blank=True, null=True)
     is_cat = models.BooleanField(default=False)
+    is_signedoff = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.user) + " " + str(self.query)
