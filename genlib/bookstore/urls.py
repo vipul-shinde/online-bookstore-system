@@ -4,6 +4,13 @@ from django.contrib import admin
 
 from . import views
 
+from django.conf.urls import url
+from django.contrib import admin
+
+admin.site.site_header = 'Genlib admin'
+admin.site.site_title = 'Genlib admin'
+admin.site.index_title = 'Genlib administration'
+admin.empty_value_display = '**Empty**'
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -27,7 +34,7 @@ urlpatterns = [
     path('payment.html', views.payment, name='payment'),
     path('finalplaceorder.html', views.finalplaceorder, name='finalplaceorder'),
     path('orderConfirmation.html', views.orderConfirmation, name='orderConfirmation'),
-    
+
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name='bookstore/password-reset/password_reset.html',
