@@ -32,6 +32,10 @@
 
 ## 🧐 About
 
+The purpose of the online bookstore system is to provide the public with a website where they can search for books, buy the ones they are interested in and reorder the books that they already bought. 
+
+The Design methodology used in the development of this project was a hybrid model which combined ```Waterfall``` and ```Sprint``` Methodologies. We used Bootstrap as the frontend development framework and the Django framework. Bootstrap gives easy access to predefined CSS and JavaScript. Django, is used to add, edit, and work with the database. Django also handles the backend and frontend integration. Django uses the MVC architecture design pattern.
+
 ## 🎯 Getting Started <a name = "getting started"></a>
 
 *Project Structure:*
