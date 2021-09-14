@@ -1,23 +1,81 @@
-# online-bookstore-system
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)]()
+[![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)]()
+[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)]()
+[![forthebadge](https://forthebadge.com/images/badges/uses-css.svg)]()
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)]()
+
+<h1 align="center">Genlib - Online Bookstore System 📚</h1>
+
+<div align="center">
+
+  [![Status](https://img.shields.io/badge/status-active-success.svg)]()
+  [![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)]()
+  [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
+
+</div>
+
+---
+
+<p align="center"> This is an online bookstore system web application developed by me and my team using HTML, CSS, JS & Bootstrap for front-end while Django for the backend.
+</p>
+
+## 📝 Table of Contents
+
+- [🧐 About](#about)
+- [🎯 Getting Started](#getting_started)
+- [🎈 Usage](#usage)
+- [🚀 Deployment](#deployment)
+- [⛏️ Built Using](#build_using)
+- [✍️ Authors](#authors)
+- [🎨 Contributing](#contributing)
+- [🌟 Support](#support)
+
+## 🧐 About
+
+## 🎯 Getting Started <a name = "getting started"></a>
+
+*Project Structure:*
 
 ```
-# Emails will be sent from this email
-email = kushaj123456@gmail.com
-email_password = kushaj12345678
-
-# To login to admin goto localhost:8000/admin
-admin_password = 12345678
-admin_email = kushaj@gmail.com
+Folder PATH listing
+Volume serial number is 0425-0C20
+C:.
+└───genlib
+    ├───bookstore
+    │   ├───.vscode
+    │   ├───migrations
+    │   ├───static
+    │   │   ├───cover_images
+    │   │   ├───css
+    │   │   ├───images
+    │   │   │   └───png
+    │   │   └───js
+    │   └───templates
+    │       └───bookstore
+    │           └───password-reset
+    └───genlib
 ```
 
-## Run website on local
-- python = 3.8.8
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
+
+### Prerequisites
+
+```
+python = 3.8.8
+Django==3.2.5
+django-cryptography==1.0
+django-crispy-forms==1.12.0
+```
+
+### Installing
 
 Use [miniconda](https://docs.conda.io/en/latest/miniconda.html) to download python 3.8 and then
 
 ```
 pip install -r requirements.txt
 ```
+
+## 🎈 Usage <a name="usage"></a>
 
 To run the website, navigate to "genlib" folder
 ```
@@ -28,3 +86,36 @@ python manage.py runserver
 The server will be at "localhost:8000".
 
 Goto "localhost:8000/admin" and enter credentials to access admin page. Here you can check all the values stored in the database.
+
+<hr>
+
+## 🚀 Deployment <a name = "deployment"></a>
+
+### Will update soon!
+
+## ⛏️ Built Using <a name = "built_using"></a>
+- [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML) - Frontend 
+- [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) - Frontend
+- [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) - Frontend
+- [Django](https://www.djangoproject.com/) - Web Framework
+
+## ✍️ Authors <a name = "authors"></a>
+- [@vipul-shinde](https://github.com/vipul-shinde) - UI and FrontEnd Development
+
+See also the list of [contributors](https://github.com/vipul-shinde/online-bookstore-system/graphs/contributors) who participated in this project.
+
+## 🎨 Contributing <a name = "contributing"></a>
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 🌟 Support
+
+Please hit the ⭐button if you like this project. 😄
+
+# Thank you!
